@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "248462708365",
+    "firebase_url": "https://fir-popapp-6778d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "fir-popapp-6778d",
+    "storage_bucket": "fir-popapp-6778d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248462708365:android:4de82e8e07181962a6dcc4",
+        "android_client_info": {
+          "package_name": "com.example.popapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFj3lCFq3eL95XVsrLxox8fiov5f4bajo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
