@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:popapp/database.dart';
+import 'package:popapp/screen/auth/authenticate.dart';
 import 'firebase_options.dart';
  
 void main() async {
@@ -23,9 +24,7 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
 
-  TextEditingController textController = TextEditingController();
-  int id = 0;
-  String? text;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,7 +32,36 @@ class _MainAppState extends State<MainApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
+      home: Auth(),
+    );
+  }
+}
+
+
+
+
+//Home page for now
+
+
+
+
+
+class DataBaseForm extends StatefulWidget {
+  const DataBaseForm({super.key});
+
+  @override
+  State<DataBaseForm> createState() => _DataBaseFormState();
+}
+
+class _DataBaseFormState extends State<DataBaseForm> {
+
+  TextEditingController textController = TextEditingController();
+  int id = 0;
+  String? text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
         appBar: AppBar(
           title: const Text('PopApp Home'),
         ),
@@ -69,8 +97,7 @@ class _MainAppState extends State<MainApp> {
             ],
           ) 
         ),
-      ),
-    );
+      );
   }
 }
 

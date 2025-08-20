@@ -14,7 +14,7 @@ class DatabaseService {
 
   Future<DataSnapshot> readData(String path) async {
     return await reference.child(path).get();
-  }
+    }
 
   Future<void> updateData(String path, Map<String, dynamic> data) async {
     await reference.child(path).update(data);
