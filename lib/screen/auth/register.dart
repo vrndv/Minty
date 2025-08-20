@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:popapp/main.dart';
-import 'package:popapp/screen/auth/register.dart';
+import 'package:popapp/screen/auth/login.dart';
 
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
   final IconData icon;
   final String barTitle;
   final String subText;
-  const Login({super.key, required this.icon, required this.barTitle, required this.subText});
+  const Register({super.key, required this.icon, required this.barTitle, required this.subText});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
 
-  final TextEditingController emailController = TextEditingController();
-  final  TextEditingController pwController = TextEditingController();
-  String? err;
    String textF(){
     if(widget.barTitle == "Login")
       return "Register";
@@ -24,29 +20,7 @@ class _LoginState extends State<Login> {
        return "Register";
     }
   }
-  login(){
-    // Handle login logic here
-    String email = emailController.text;
-    String password = pwController.text;
 
-    if(email == "vrndv" && password == "1234"){
-      // Perform login operation
-     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                          return DataBaseForm(user:"vrndv");
-                        },));
-      // Navigate to home screen or perform other actions
-    }
-    else if(email == "vrndv" && password != "1234"){
-      setState(() {
-         err = "Invalid password";
-      });}
-    else {
-      setState(() {
-         err = "Invalid email or password";
-      });
-     
-    }
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,17 +34,34 @@ class _LoginState extends State<Login> {
                  SizedBox(height: 20),
                 Icon(widget.icon , size: 50,color: Colors.black54 ,),
                 SizedBox(height: 20),
-                Text("Welcome back! we missed you!", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
+                Text("Let's get you started ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
                 SizedBox(height: 80),
-                Text( err ?? "" , style: TextStyle(color: Colors.red, fontSize: 16)),
-                SizedBox(height: 20),
+
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: TextField(
-                    controller : emailController,
                     decoration: InputDecoration(
                       hintText: "Email",
                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black,width: 1.5)),
+                      hintStyle: TextStyle(
+                        color: const Color.fromARGB(55, 0, 0, 0),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 20),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      hintText: "Password",
+                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black,width: 1.5)),
                       hintStyle: TextStyle(
                         color: const Color.fromARGB(55, 0, 0, 0),
                       ),
@@ -84,10 +75,9 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
-                    controller : pwController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      hintText: "Password",
+                      hintText: "Confirm password",
                       focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black,width: 1.5)),
                       hintStyle: TextStyle(
                         color: const Color.fromARGB(55, 0, 0, 0),
@@ -102,18 +92,12 @@ class _LoginState extends State<Login> {
                 SizedBox(height: 40),
         
                 Center(
-                  child: GestureDetector(
-                    onTap: () {
-                      // Handle login logic here
-                      login();
-                    },
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(5)),
-                      child: Center(child: Text(widget.barTitle , style:TextStyle(color: Colors.white,),)),
-                    ),
+                  child: Container(
+                    height: 50,
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(5)),
+                    child: Center(child: Text(widget.barTitle , style:TextStyle(color: Colors.white,),)),
                   ),
                 ),
                  SizedBox(height: 20),
@@ -123,8 +107,8 @@ class _LoginState extends State<Login> {
                     Text(widget.subText),
                     GestureDetector(
                       onTap: () {
-                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                          return Register(icon: Icons.app_registration, barTitle: "Register",subText: "Already a member?");
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                          return Login(icon: Icons.login, barTitle: "Login",subText: "Don't have an account?");
                         },));
                       },
                       child:  Text((widget.barTitle == "Login") ? "  Register" : "  Login" , style: TextStyle(fontWeight: FontWeight.w600),),
