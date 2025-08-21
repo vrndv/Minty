@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:popapp/screen/auth/login.dart';
 
@@ -13,13 +14,10 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
 
-   String textF(){
-    if(widget.barTitle == "Login")
-      return "Register";
-    else{
-       return "Register";
-    }
-  }
+
+  final TextEditingController emailController = TextEditingController();
+  final  TextEditingController pwController = TextEditingController();
+  final  TextEditingController cpwController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +38,7 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
                       hintText: "Email",
                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black,width: 1.5)),
@@ -58,6 +57,7 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
+                    controller: pwController,
                     obscureText: true,
                     decoration: InputDecoration(
                       hintText: "Password",
@@ -75,6 +75,7 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
+                    controller: cpwController,
                     obscureText: true,
                     decoration: InputDecoration(
                       hintText: "Confirm password",
@@ -92,12 +93,31 @@ class _RegisterState extends State<Register> {
                 SizedBox(height: 40),
         
                 Center(
-                  child: Container(
-                    height: 50,
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(5)),
-                    child: Center(child: Text(widget.barTitle , style:TextStyle(color: Colors.white,),)),
+                  child: GestureDetector(
+                    onTap: () async {
+                       print('The password.');
+                      try {
+                        final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                          email: emailController.text,
+                          password: pwController.text,
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'weak-password') {
+                          print('The password provided is too weak.');
+                        } else if (e.code == 'email-already-in-use') {
+                          print('The account already exists for that email.');
+                        }
+                      } catch (e) {
+                        print(e);
+                      }
+                    },
+                    child: Container(
+                      height: 50,
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(5)),
+                      child: Center(child: Text(widget.barTitle , style:TextStyle(color: Colors.white,),)),
+                    ),
                   ),
                 ),
                  SizedBox(height: 20),
@@ -111,7 +131,7 @@ class _RegisterState extends State<Register> {
                           return Login(icon: Icons.login, barTitle: "Login",subText: "Don't have an account?");
                         },));
                       },
-                      child:  Text((widget.barTitle == "Login") ? "  Register" : "  Login" , style: TextStyle(fontWeight: FontWeight.w600),),
+                      child:  Text( "Login" , style: TextStyle(fontWeight: FontWeight.w600)),
                     )
                   ],
                  ),

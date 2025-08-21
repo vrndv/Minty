@@ -1,52 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:popapp/main.dart';
 import 'package:popapp/screen/auth/register.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatefulWidget {
   final IconData icon;
   final String barTitle;
   final String subText;
-  const Login({super.key, required this.icon, required this.barTitle, required this.subText});
+  const Login({
+    super.key,
+    required this.icon,
+    required this.barTitle,
+    required this.subText,
+  });
 
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-
   final TextEditingController emailController = TextEditingController();
-  final  TextEditingController pwController = TextEditingController();
+  final TextEditingController pwController = TextEditingController();
   String? err;
-   String textF(){
-    if(widget.barTitle == "Login")
+  String textF() {
+    if (widget.barTitle == "Login")
       return "Register";
-    else{
-       return "Register";
+    else {
+      return "Register";
     }
   }
-  login(){
+
+  login() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(child: CircularProgressIndicator());
+      },
+    );
     // Handle login logic here
     String email = emailController.text;
     String password = pwController.text;
 
-    if(email == "vrndv" && password == "1234"){
-      // Perform login operation
-     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                          return DataBaseForm(user:"vrndv");
-                        },));
-      // Navigate to home screen or perform other actions
-    }
-    else if(email == "vrndv" && password != "1234"){
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // ignore: use_build_context_synchronously
+    } on FirebaseAuthException catch (e) {
       setState(() {
-         err = "Invalid password";
-      });}
-    else {
-      setState(() {
-         err = "Invalid email or password";
+        Navigator.pop(context);
+        if (e.code == 'user-not-found') {
+          err = 'No user found for that email.';
+        } else if (e.code == 'invalid-credential') {
+          err = 'Wrong password provided for that user.';
+        } else {
+          err = "An error occurred : ${e.code}";
+        }
       });
-     
+    }
+
+    if (FirebaseAuth.instance.currentUser != null) {
+      // User is logged in, navigate to the home page
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return DataBaseForm(
+              user: FirebaseAuth.instance.currentUser!.email!,
+            );
+          },
+        ),
+        (route) => false,
+      );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,20 +87,28 @@ class _LoginState extends State<Login> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                 SizedBox(height: 20),
-                Icon(widget.icon , size: 50,color: Colors.black54 ,),
                 SizedBox(height: 20),
-                Text("Welcome back! we missed you!", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
+                Icon(widget.icon, size: 50, color: Colors.black54),
+                SizedBox(height: 20),
+                Text(
+                  "Welcome back! we missed you!",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                ),
                 SizedBox(height: 80),
-                Text( err ?? "" , style: TextStyle(color: Colors.red, fontSize: 16)),
+                Text(
+                  err ?? "",
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                ),
                 SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: TextField(
-                    controller : emailController,
+                    controller: emailController,
                     decoration: InputDecoration(
                       hintText: "Email",
-                       focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black,width: 1.5)),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 1.5),
+                      ),
                       hintStyle: TextStyle(
                         color: const Color.fromARGB(55, 0, 0, 0),
                       ),
@@ -84,11 +122,13 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
-                    controller : pwController,
+                    controller: pwController,
                     obscureText: true,
                     decoration: InputDecoration(
                       hintText: "Password",
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black,width: 1.5)),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 1.5),
+                      ),
                       hintStyle: TextStyle(
                         color: const Color.fromARGB(55, 0, 0, 0),
                       ),
@@ -98,9 +138,9 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-        
+
                 SizedBox(height: 40),
-        
+
                 Center(
                   child: GestureDetector(
                     onTap: () {
@@ -111,28 +151,47 @@ class _LoginState extends State<Login> {
                       height: 50,
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(5)),
-                      child: Center(child: Text(widget.barTitle , style:TextStyle(color: Colors.white,),)),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Center(
+                        child: Text(
+                          widget.barTitle,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                 SizedBox(height: 20),
-                 Row(
+                SizedBox(height: 20),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(widget.subText),
                     GestureDetector(
                       onTap: () {
-                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                          return Register(icon: Icons.app_registration, barTitle: "Register",subText: "Already a member?");
-                        },));
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return Register(
+                                icon: Icons.app_registration,
+                                barTitle: "Register",
+                                subText: "Already a member?",
+                              );
+                            },
+                          ),
+                        );
                       },
-                      child:  Text((widget.barTitle == "Login") ? "  Register" : "  Login" , style: TextStyle(fontWeight: FontWeight.w600),),
-                    )
+                      child: Text(
+                        (widget.barTitle == "Login") ? "  Register" : "  Login",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
                   ],
-                 ),
-                 SizedBox(height: 70),
-               
+                ),
+                SizedBox(height: 70),
               ],
             ),
           ),

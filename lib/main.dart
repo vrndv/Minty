@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:popapp/database.dart';
 import 'package:popapp/screen/auth/authenticate.dart';
 import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,6 +66,7 @@ class _DataBaseFormState extends State<DataBaseForm> {
               title: Text('Welcome to PopApp!'),
               trailing: GestureDetector(
                 onTap: () {
+                  FirebaseAuth.instance.signOut();
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
                     return Auth();
                   },));
