@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:popapp/main.dart';
 import 'package:popapp/screen/auth/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:popapp/screen/home/home.dart';
 
 class Login extends StatefulWidget {
   final IconData icon;
@@ -43,11 +42,11 @@ class _LoginState extends State<Login> {
     String password = pwController.text;
 
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // ignore: use_build_context_synchronously
+    
     } on FirebaseAuthException catch (e) {
       setState(() {
         Navigator.pop(context);
@@ -100,6 +99,7 @@ class _LoginState extends State<Login> {
                   style: TextStyle(color: Colors.red, fontSize: 16),
                 ),
                 SizedBox(height: 20),
+
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: TextField(
