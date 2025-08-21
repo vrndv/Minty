@@ -19,6 +19,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   String? err;
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController pwController = TextEditingController();
   final TextEditingController cpwController = TextEditingController();
@@ -28,42 +29,38 @@ class _RegisterState extends State<Register> {
   register() async {
     err = "";
     if (pwController.text != cpwController.text) {
-     setState(() {
+      setState(() {
         err = '$err The passwords does not match \n';
         pwerrClr = true;
       });
-    }
-     else {
+    } else {
       setState(() {
         pwerrClr = false;
       });
       try {
-          await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-              email: emailController.text,
-              password: pwController.text,
-            );
-            setState(() {
-               emailerrClr = false;
-               Navigator.pop(context);
-            });
-           
-
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: pwController.text,
+          
+        );
+        setState(() {
+          emailerrClr = false;
+          Navigator.pop(context);
+        });
       } on FirebaseAuthException catch (e) {
         setState(() {
-
           if (e.code == 'weak-password') {
             err = 'The password provided is too weak.\n';
-          }  
+          }
           if (e.code == 'email-already-in-use') {
             err = '$err The account already exists for that email.\n';
             emailerrClr = true;
-          }  
-          
+          }
+
           if (e.code == 'invalid-email') {
             err = '$err The email address is not valid.\n';
             emailerrClr = true;
-          } 
+          }
         });
       }
     }
@@ -91,9 +88,40 @@ class _RegisterState extends State<Register> {
                   err ?? "",
                   style: TextStyle(color: Colors.red, fontSize: 16),
                 ),
-                SizedBox(height: 20),
+               
                 Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.symmetric(horizontal:    20.0),
+                  child: TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                          width: pwerrClr ? 1.95 : 1.5,
+                        ),
+                      ),
+                      hintText: "Username",
+                      hintStyle: TextStyle(
+                        color: const Color.fromARGB(55, 0, 0, 0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1.5,color: Colors.black45),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+
+                  padding: const EdgeInsets.symmetric(horizontal:    20.0),
+                  child: Row(
+                    
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [Text("(Beta)")],
+                  ),
+                ),
+               
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20,left: 20,right: 20),
                   child: TextField(
                     controller: emailController,
                     decoration: InputDecoration(
@@ -102,7 +130,7 @@ class _RegisterState extends State<Register> {
                         borderSide: BorderSide(
                           color: emailerrClr
                               ? const Color.fromARGB(255, 241, 57, 44)
-                              : Colors.black,
+                              : Colors.black45,
                           width: 1.5,
                         ),
                       ),
@@ -124,7 +152,6 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
 
-                SizedBox(height: 20),
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -137,7 +164,7 @@ class _RegisterState extends State<Register> {
                         borderSide: BorderSide(
                           color: pwerrClr
                               ? const Color.fromARGB(255, 241, 57, 44)
-                              : Colors.black,
+                              : Colors.black45,
                           width: 1.5,
                         ),
                       ),
@@ -158,6 +185,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                 ),
+
                 SizedBox(height: 20),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -170,7 +198,7 @@ class _RegisterState extends State<Register> {
                         borderSide: BorderSide(
                           color: pwerrClr
                               ? const Color.fromARGB(255, 241, 57, 44)
-                              : Colors.black,
+                              : Colors.black45,
                           width: 1.5,
                         ),
                       ),
