@@ -1,7 +1,7 @@
 # popapp
 
 A new Flutter project.
-
+- [Release Page](https://github.com/vrndv/Minty/releases/)
 ## Getting Started
 
 This project is a starting point for a Flutter application.
