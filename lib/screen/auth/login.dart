@@ -67,7 +67,7 @@ class _LoginState extends State<Login> {
         MaterialPageRoute(
           builder: (context) {
             return DataBaseForm(
-              user: FirebaseAuth.instance.currentUser!.email!,
+              userEmail: FirebaseAuth.instance.currentUser!.email!,
             );
           },
         ),

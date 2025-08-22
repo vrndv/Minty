@@ -5,6 +5,11 @@ import 'package:popapp/screen/home/home.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart'; 
 import 'package:rive/rive.dart';
+
+
+//Just to save point ,the username adding option is currently situated in homescreen
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -43,7 +48,7 @@ class _MainAppState extends State<MainApp> {
           }
           if (snapshot.hasData) {
             // User is signed in
-            return DataBaseForm(user: snapshot.data!.email!);
+            return DataBaseForm(userEmail: snapshot.data!.email!);
           }
           // User is not signed in
           return const Auth();
