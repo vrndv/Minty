@@ -4,15 +4,14 @@ class DatabaseService {
   final db = FirebaseFirestore.instance;
 
   // Create a new user wit
-  Future<bool> userExist({required Map<String, dynamic> data}) async {
-    var check =await db.collection("user").where("username",isEqualTo: data["username"]).get();
-    print(check.docs.isNotEmpty);
-    return check.docs.isNotEmpty;
+  Future<bool> userExist({required String data}) async {
+    var check =await db.collection("user").where("username",isEqualTo: data).get();
+
+    return check.docs.isEmpty;
   }
 
   Future<bool> write({required Map<String, dynamic> data}) async {
-    if (await userExist(data: data) == false) {
-      print(data);
+    if (await userExist(data: data["username"]) == true) {
       await db.collection("user").add(data).then((DocumentReference doc) {});
       return false;
     }
@@ -32,4 +31,20 @@ class DatabaseService {
     }
     return out ?? "";
   }
+
+    Future<bool> usernameExist({required String email}) async {
+    var check =await db.collection("user").where("email",isEqualTo: email).get();
+    return check.docs.isNotEmpty;
+  }
+
+  Future<String> findUsername({required String email}) async {
+    var check =await db.collection("user").where("email",isEqualTo: email).get();
+    return check.docs.first["username"];
+  }
+
+
+    
 }
+
+
+

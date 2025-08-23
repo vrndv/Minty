@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:popapp/database.dart';
 import 'package:popapp/screen/auth/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:popapp/screen/auth/updateinfo.dart';
 import 'package:popapp/screen/home/home.dart';
 
 class Login extends StatefulWidget {
@@ -23,14 +25,14 @@ class _LoginState extends State<Login> {
   final TextEditingController pwController = TextEditingController();
   String? err;
   String textF() {
-    if (widget.barTitle == "Login")
+    if (widget.barTitle == "Login") {
       return "Register";
-    else {
+    } else {
       return "Register";
     }
   }
 
-  login() async {
+  void login() async {
     showDialog(
       context: context,
       builder: (context) {
@@ -46,7 +48,6 @@ class _LoginState extends State<Login> {
         email: email,
         password: password,
       );
-    
     } on FirebaseAuthException catch (e) {
       setState(() {
         Navigator.pop(context);
@@ -62,17 +63,28 @@ class _LoginState extends State<Login> {
 
     if (FirebaseAuth.instance.currentUser != null) {
       // User is logged in, navigate to the home page
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return DataBaseForm(
-              userEmail: FirebaseAuth.instance.currentUser!.email!,
-            );
-          },
-        ),
-        (route) => false,
-      );
+      if (await DatabaseService().usernameExist(email: email) == true) {
+        var uname = await DatabaseService().findUsername(email: email);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return DataBaseForm(userEmail: uname);
+            },
+          ),
+          (route) => false,
+        );
+      } else {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return UpdateInfo(userEmail: email);
+            },
+          ),
+          (route) => false,
+        );
+      }
     }
   }
 
