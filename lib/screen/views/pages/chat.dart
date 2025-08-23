@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:popapp/services/chat_services.dart';
 
@@ -39,9 +40,7 @@ class _ChatPageState extends State<ChatPage> {
         color: const Color.fromARGB(75, 214, 214, 214),
         child: Column(
           children: [
-            Expanded(child: Column(
-              children: _buildMessageList(),
-            )),
+            Expanded(child: _buildMessageList()),
             Container(
               margin: EdgeInsets.all(15),
               height:40,
@@ -85,6 +84,25 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessageList(){
-    return ListTile();
+    return StreamBuilder(stream: _chatServices.getMessage(), builder: (context, snapshot) {
+      if(snapshot.hasError)
+      {
+        return const Text("Error");
+      }
+       if(snapshot.connectionState == ConnectionState.waiting)
+      {
+        return const Text("...");
+      }
+      return ListView(
+        children: snapshot.data!.docs.map((doc)=>_buildMessageItem(doc)).toList(),
+      );
+    },);
+  }
+
+  //build message item
+
+  Widget _buildMessageItem(DocumentSnapshot doc ){
+    Map<String,dynamic> data = doc.data() as Map<String,dynamic>;
+    return Text(data["message"]);
   }
 }
