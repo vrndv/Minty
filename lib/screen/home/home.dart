@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
-
+import 'package:popapp/screen/home/navbar.dart';
+import 'package:popapp/screen/views/tree.dart';
 
 class DataBaseForm extends StatefulWidget {
   final String userEmail;
@@ -16,25 +16,27 @@ class _DataBaseFormState extends State<DataBaseForm> {
   String? text;
   String? out;
   String err = " ";
-  bool isValidUsername(String username) {
-    final validUsernameRegex = RegExp(r'^[a-zA-Z0-9_]+$');
-    return validUsernameRegex.hasMatch(username);
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('PopApp Home'),
+        elevation: 20,
+        shadowColor: const Color.fromARGB(83, 0, 0, 0),
         actions: [
-          Text(
-            widget.userEmail,
-            style: const TextStyle(fontSize: 18, color: Colors.black),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Text(
+              widget.userEmail,
+              style: const TextStyle(fontSize: 18, color: Colors.black),
+            ),
           ),
         ],
       ),
-      body: null,
+      body: WidgetTree(),
+      
+      bottomNavigationBar: Navbar(),
     );
   }
 }
