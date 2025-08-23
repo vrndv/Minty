@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:popapp/screen/auth/authenticate.dart';
 import 'package:popapp/screen/home/navbar.dart';
 import 'package:popapp/screen/views/tree.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
@@ -21,6 +24,11 @@ class _DataBaseFormState extends State<DataBaseForm> {
   void initState() {
     super.initState();
     currentUser.value = widget.userEmail; 
+    if (currentUser.value == "null") {
+      FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return Auth();
+      },));}
   }
 
   Widget build(BuildContext context) {
