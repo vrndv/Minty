@@ -4,6 +4,7 @@ import 'package:popapp/screen/auth/authenticate.dart';
 import 'package:popapp/screen/home/navbar.dart';
 import 'package:popapp/screen/views/tree.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
+
 class DataBaseForm extends StatefulWidget {
   final String userEmail;
   const DataBaseForm({super.key, required this.userEmail});
@@ -22,12 +23,19 @@ class _DataBaseFormState extends State<DataBaseForm> {
   @override
   void initState() {
     super.initState();
-    currentUser.value = widget.userEmail; 
+    currentUser.value = widget.userEmail;
+    currentEmail.value = FirebaseAuth.instance.currentUser!.email!;
     if (currentUser.value == "null") {
       FirebaseAuth.instance.signOut();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-        return Auth();
-      },));}
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return Auth();
+          },
+        ),
+      );
+    }
   }
 
   Widget build(BuildContext context) {
@@ -47,7 +55,7 @@ class _DataBaseFormState extends State<DataBaseForm> {
         ],
       ),
       body: WidgetTree(),
-      
+
       bottomNavigationBar: Navbar(),
     );
   }

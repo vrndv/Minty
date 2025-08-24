@@ -1,8 +1,7 @@
 import 'dart:async';
-
+import 'package:keyboard_visibility_pro/keyboard_visibility_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/services/chat_services.dart';
 import 'package:intl/intl.dart';
@@ -15,16 +14,13 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  late StreamSubscription<bool> _keyBoardSub ;
   //chat services
   final _chatServices = ChatServices();
   final TextEditingController msgcontroller = TextEditingController();
   //Send Message
   Future<void> sendMessage() async {
     if (msgcontroller.text.isNotEmpty) {
-      print("hmmm....");
       await _chatServices.sendMessage(message: msgcontroller.text);
-      print("send");
       msgcontroller.clear();
       scrollDown();
     }
@@ -33,31 +29,17 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    final _keyBoardSub = KeyboardVisibilityController();
-
-    _keyBoardSub.onChange.listen((bool visible) {
-          print(visible);
-      if(visible == true){
-        Future.delayed(const Duration(milliseconds: 500),() => scrollDown(),);
-        print("yes");
-      }
-      else{
-        print("no");
-      }
-    },);
   }
-  @override
-  void dispose() {
-    _keyBoardSub.cancel();
-    super.dispose();
-  }
-
-
 
   final ScrollController _scrollController = ScrollController();
-  void scrollDown(){
-    _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+  void scrollDown({int time = 300}) {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: Duration(milliseconds: time),
+      curve: Curves.fastOutSlowIn,
+    );
   }
+
   // final keyboardVisibilityController = Flutter
   @override
   Widget build(BuildContext context) {
@@ -73,41 +55,52 @@ class _ChatPageState extends State<ChatPage> {
           children: [
             Expanded(child: _buildMessageList()),
 
-            Container(
-              margin: EdgeInsets.all(15),
-              padding: EdgeInsets.all(0),
-              height: 30,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(right: 10),
-                      child: TextField(
-                        controller: msgcontroller,
-                        decoration: InputDecoration(
-                          hintText: "Message",
-                          contentPadding: EdgeInsets.only(top: 10, left: 10),
-                          border: OutlineInputBorder(),
+            KeyboardVisibility(
+              onChanged: (p0) => {
+                if (p0 == true)
+                  {
+                    Future.delayed(
+                      const Duration(milliseconds: 150),
+                      () => scrollDown(time: 250),
+                    ),
+                  },
+              },
+              child: Container(
+                margin: EdgeInsets.all(15),
+                padding: EdgeInsets.all(0),
+                height: 30,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: TextField(
+                          controller: msgcontroller,
+                          decoration: InputDecoration(
+                            hintText: "Message",
+                            contentPadding: EdgeInsets.only(top: 10, left: 10),
+                            border: OutlineInputBorder(),
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  GestureDetector(
-                    onTap: () {
-                      sendMessage();
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: const Color.fromARGB(24, 0, 0, 0),
+                    GestureDetector(
+                      onTap: () {
+                        sendMessage();
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color.fromARGB(24, 0, 0, 0),
+                        ),
+                        child: Icon(Icons.send),
                       ),
-                      child: Icon(Icons.send),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -118,7 +111,6 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageList() {
     return StreamBuilder(
-      
       stream: _chatServices.getMessage(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -127,10 +119,13 @@ class _ChatPageState extends State<ChatPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Text("...");
         }
-       Future.delayed(const Duration(milliseconds: 500),() => scrollDown(),);
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) => _scrollController.jumpTo(
+            _scrollController.position.maxScrollExtent,
+          ),
+        );
         return ListView(
           controller: _scrollController,
-         
           children: snapshot.data!.docs
               .map((doc) => _buildMessageItem(doc))
               .toList(),
@@ -153,12 +148,12 @@ class _ChatPageState extends State<ChatPage> {
               ? EdgeInsets.fromLTRB(50, 5, 10, 5)
               : EdgeInsets.fromLTRB(10, 5, 50, 5),
           padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(                        
+          decoration: BoxDecoration(
             color: data['username'] == currentUser.value
                 ? Colors.blue[100]
                 : Colors.grey[300],
             borderRadius: BorderRadius.circular(10),
-          ),  
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -180,9 +175,9 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ),
             ],
-          ),        
-            ),
-      ));
+          ),
+        ),
+      ),
+    );
   }
-
 }

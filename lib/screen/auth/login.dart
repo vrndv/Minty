@@ -150,7 +150,41 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-
+                Padding(
+                  padding: EdgeInsetsGeometry.only(right: 20 ,top: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          if (emailController.text.contains("@")) {
+                            await FirebaseAuth.instance.sendPasswordResetEmail(
+                              email: emailController.text,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Reset link sent to: ${emailController.text}\nChech Spam folders ",
+                                ),
+                                duration: Duration(seconds: 5),
+                              ),
+                            );
+                          }
+                          else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Enter a valid Email ID",
+                                ),
+                                duration: Duration(seconds: 2),
+                              ),);
+                          }
+                        },
+                        child: Text("Forgot Password?",style: TextStyle(fontWeight: FontWeight.w500),),
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(height: 40),
 
                 Center(

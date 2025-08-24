@@ -96,14 +96,6 @@ class _RegisterState extends State<Register> {
               ),
 
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [Text("(Beta)")],
-                ),
-              ),
-
-              Padding(
                 padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
                 child: TextField(
                   controller: emailController,

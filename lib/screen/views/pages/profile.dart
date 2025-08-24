@@ -8,26 +8,79 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 10,left: 15,right: 15),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 252, 223, 223),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: GestureDetector(
-        onTap: () {
-          FirebaseAuth.instance.signOut();
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-            return Auth();
-          },));
-        },
-        child: ListTile(
-          title: Text("Logout", style: TextStyle(color: Colors.red)),
-          subtitle: Text(currentUser.value),
-          trailing: Icon(Icons.logout_rounded, color: Colors.red),
-        
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: 10, left: 15, right: 15),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(50, 114, 114, 114),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: GestureDetector(
+            onTap: () async {
+              await FirebaseAuth.instance.sendPasswordResetEmail(
+                email: currentEmail.value,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    "Reset link sent to: ${currentEmail.value}\nChech Spam folders ",
+                  ),
+                  duration: Duration(seconds: 5),
+                ),
+              );
+              await Future.delayed(Duration(seconds: 4));
+              FirebaseAuth.instance.signOut();
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return Auth();
+                  },
+                ),
+              );
+            },
+            child: ListTile(
+              title: Text(
+                "Reset Paassword",
+                style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+              ),
+
+              trailing: Icon(
+                Icons.lock_reset,
+                size: 26,
+                color: const Color.fromARGB(255, 0, 0, 0),
+              ),
+            ),
+          ),
         ),
-      ),
+        Container(
+          margin: EdgeInsets.only(top: 10, left: 15, right: 15),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 252, 223, 223),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: GestureDetector(
+            onTap: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return Auth();
+                  },
+                ),
+              );
+            },
+            child: ListTile(
+              title: Text("Logout", style: TextStyle(color: Colors.red)),
+              subtitle: Text(currentUser.value),
+              trailing: Icon(Icons.logout_rounded, color: Colors.red),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
