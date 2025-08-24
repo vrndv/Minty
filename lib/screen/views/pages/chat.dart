@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/services/chat_services.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +15,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  late StreamSubscription<bool> _keyBoardSub ;
   //chat services
   final _chatServices = ChatServices();
   final TextEditingController msgcontroller = TextEditingController();
@@ -22,9 +26,39 @@ class _ChatPageState extends State<ChatPage> {
       await _chatServices.sendMessage(message: msgcontroller.text);
       print("send");
       msgcontroller.clear();
+      scrollDown();
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+    final _keyBoardSub = KeyboardVisibilityController();
+
+    _keyBoardSub.onChange.listen((bool visible) {
+          print(visible);
+      if(visible == true){
+        Future.delayed(const Duration(milliseconds: 500),() => scrollDown(),);
+        print("yes");
+      }
+      else{
+        print("no");
+      }
+    },);
+  }
+  @override
+  void dispose() {
+    _keyBoardSub.cancel();
+    super.dispose();
+  }
+
+
+
+  final ScrollController _scrollController = ScrollController();
+  void scrollDown(){
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+  }
+  // final keyboardVisibilityController = Flutter
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,6 +118,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageList() {
     return StreamBuilder(
+      
       stream: _chatServices.getMessage(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -92,7 +127,10 @@ class _ChatPageState extends State<ChatPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Text("...");
         }
+       Future.delayed(const Duration(milliseconds: 500),() => scrollDown(),);
         return ListView(
+          controller: _scrollController,
+         
           children: snapshot.data!.docs
               .map((doc) => _buildMessageItem(doc))
               .toList(),
@@ -146,4 +184,5 @@ class _ChatPageState extends State<ChatPage> {
             ),
       ));
   }
+
 }

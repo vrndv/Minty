@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:248462708365:android:4de82e8e07181962a6dcc4",
+        "mobilesdk_app_id": "1:248462708365:android:684be1c2f904de78a6dcc4",
         "android_client_info": {
-          "package_name": "com.example.popapp"
+          "package_name": "com.varungg.popapp"
         }
       },
       "oauth_client": [],

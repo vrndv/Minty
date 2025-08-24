@@ -1,4 +1,4 @@
-package com.example.popapp
+package com.varungg.popapp
 
 import io.flutter.embedding.android.FlutterActivity
 
