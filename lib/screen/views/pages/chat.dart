@@ -43,64 +43,70 @@ class _ChatPageState extends State<ChatPage> {
   // final keyboardVisibilityController = Flutter
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ValueListenableBuilder(
+      valueListenable: currentTheme,
+      builder: (context, value, child) {
+        return Scaffold(
+        
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(child: _buildMessageList()),
       
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(child: _buildMessageList()),
-
-            KeyboardVisibility(
-              onChanged: (p0) => {
-                if (p0 == true)
-                  {
-                    Future.delayed(
-                      const Duration(milliseconds: 150),
-                      () => scrollDown(time: 250),
-                    ),
-                  },
-              },
-              child: Container(
-                margin: EdgeInsets.all(15),
-                padding: EdgeInsets.all(0),
-                height: 40,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.only(right: 10),
-                        child: TextField(
-                          controller: msgcontroller,
-                          decoration: InputDecoration(
-                            hintText: "Message",
-                            contentPadding: EdgeInsets.only(top: 10, left: 10),
-                            border: OutlineInputBorder(),
+              KeyboardVisibility(
+                onChanged: (p0) => {
+                  if (p0 == true)
+                    {
+                      Future.delayed(
+                        const Duration(milliseconds: 150),
+                        () => scrollDown(time: 250),
+                      ),
+                    },
+                },
+                child: Container(
+                  margin: EdgeInsets.all(15),
+                  padding: EdgeInsets.all(0),
+                  height: 40,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: TextField(
+                            controller: msgcontroller,
+                            decoration: InputDecoration(
+                              hintText: value ? "Message" : "Enter Message",
+                              contentPadding: EdgeInsets.only(top: 10, left: 10),
+                              border: OutlineInputBorder(),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-
-                    GestureDetector(
-                      onTap: () {
-                        sendMessage();
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: const Color.fromARGB(24, 0, 0, 0),
+      
+                      GestureDetector(
+                        onTap: () {
+                          sendMessage();
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: const Color.fromARGB(24, 0, 0, 0),
+                          ),
+                          child: Icon(Icons.send),
                         ),
-                        child: Icon(Icons.send),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+      );
+      },
+ 
     );
   }
 
@@ -150,7 +156,7 @@ class _ChatPageState extends State<ChatPage> {
             decoration: BoxDecoration(
               color: data['username'] == currentUser.value
                   ? Colors.blue[100]
-                  : Colors.grey[300],
+                  : currentTheme.value ?  Colors.grey[300] :Colors.grey[50],
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(

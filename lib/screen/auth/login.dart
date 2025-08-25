@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/database.dart';
 import 'package:popapp/screen/auth/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -99,7 +100,7 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 20),
-                Icon(widget.icon, size: 50, color: Colors.black54),
+                Icon(widget.icon, size: 50, color:currentTheme.value ? const Color.fromARGB(104, 0, 0, 0) : const Color.fromARGB(118, 255, 255, 255)),
                 SizedBox(height: 20),
                 Text(
                   "Welcome back! we missed you!",
@@ -117,12 +118,28 @@ class _LoginState extends State<Login> {
                   child: TextField(
                     controller: emailController,
                     decoration: InputDecoration(
-                      hintText: "Email",
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black, width: 1.5),
+                      hint: Text(
+                        "Email ",
+                        style: TextStyle(
+                          color: currentTheme.value
+                              ? Colors.black26
+                              : Colors.white30,
+                        ),
                       ),
-                      hintStyle: TextStyle(
-                        color: const Color.fromARGB(55, 0, 0, 0),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: currentTheme.value
+                              ? Colors.black
+                              : Colors.white,
+                          width: 1.5,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: currentTheme.value? Colors.white: const Color.fromARGB(255, 167, 129, 86),
+                              
+                          width: 1.5,
+                        ),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
@@ -130,20 +147,33 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
+
                 SizedBox(height: 20),
+
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: TextField(
                     controller: pwController,
+
                     obscureText: true,
                     decoration: InputDecoration(
-                      hintText: "Password",
+                      hint: Text(
+                        "Password ",
+                        style: TextStyle(
+                          color: currentTheme.value
+                              ? Colors.black26
+                              : Colors.white30,
+                        ),
+                      ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black, width: 1.5),
+                        borderSide: BorderSide(
+                          color: currentTheme.value
+                              ? Colors.black
+                              : Color.fromARGB(255, 167, 129, 86),
+                          width: 1.5,
+                        ),
                       ),
-                      hintStyle: TextStyle(
-                        color: const Color.fromARGB(55, 0, 0, 0),
-                      ),
+
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),
@@ -151,7 +181,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsetsGeometry.only(right: 20 ,top: 5),
+                  padding: EdgeInsetsGeometry.only(right: 20, top: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -169,18 +199,19 @@ class _LoginState extends State<Login> {
                                 duration: Duration(seconds: 5),
                               ),
                             );
-                          }
-                          else{
+                          } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(
-                                  "Enter a valid Email ID",
-                                ),
+                                content: Text("Enter a valid Email ID"),
                                 duration: Duration(seconds: 2),
-                              ),);
+                              ),
+                            );
                           }
                         },
-                        child: Text("Forgot Password?",style: TextStyle(fontWeight: FontWeight.w500),),
+                        child: Text(
+                          "Forgot Password?",
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
                       ),
                     ],
                   ),

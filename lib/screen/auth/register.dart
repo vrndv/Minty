@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/screen/auth/login.dart';
 import 'package:popapp/screen/auth/updateinfo.dart';
 
@@ -26,6 +27,21 @@ class _RegisterState extends State<Register> {
   final TextEditingController cpwController = TextEditingController();
   bool pwerrClr = false;
   bool emailerrClr = false;
+
+  void check(){
+    if (pwController.text == cpwController.text){
+      pwerrClr = false;
+      setState(() {
+        
+      });
+    }else{
+      setState(() {
+        pwerrClr = true;
+      });
+      
+    }
+    print(pwerrClr);
+  }
 
   Future<void> register() async {
     err = "";
@@ -58,15 +74,19 @@ class _RegisterState extends State<Register> {
         setState(() {
           if (e.code == 'weak-password') {
             err = 'The password provided is too weak.\n';
+            emailerrClr = false;
+            pwerrClr = true;
           }
           if (e.code == 'email-already-in-use') {
             err = '$err The account already exists for that email.\n';
             emailerrClr = true;
+             pwerrClr = false;
           }
 
           if (e.code == 'invalid-email') {
             err = '$err The email address is not valid.\n';
             emailerrClr = true;
+             pwerrClr = false;
           }
         });
       }
@@ -83,7 +103,7 @@ class _RegisterState extends State<Register> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 20),
-              Icon(widget.icon, size: 50, color: Colors.black54),
+              Icon(widget.icon, size: 50, color:currentTheme.value ? const Color.fromARGB(104, 0, 0, 0) : const Color.fromARGB(118, 255, 255, 255)),
               SizedBox(height: 20),
               Text(
                 "Let's get you started ",
@@ -100,12 +120,19 @@ class _RegisterState extends State<Register> {
                 child: TextField(
                   controller: emailController,
                   decoration: InputDecoration(
-                    hintText: "Email",
+                   hint: Text(
+                        "Email ",
+                        style: TextStyle(
+                          color: currentTheme.value
+                              ? Colors.black26
+                              : Colors.white30,
+                        ),
+                      ),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: emailerrClr
                             ? const Color.fromARGB(255, 241, 57, 44)
-                            : Colors.black45,
+                            :currentTheme.value?Colors.black:Colors.white,
                         width: 1.5,
                       ),
                     ),
@@ -113,7 +140,7 @@ class _RegisterState extends State<Register> {
                       borderSide: BorderSide(
                         color: emailerrClr
                             ? const Color.fromARGB(255, 255, 44, 29)
-                            : Colors.black,
+                            : const Color.fromARGB(255, 167, 129, 86),
                         width: pwerrClr ? 1.95 : 1.5,
                       ),
                     ),
@@ -133,12 +160,19 @@ class _RegisterState extends State<Register> {
                   controller: pwController,
                   obscureText: true,
                   decoration: InputDecoration(
-                    hintText: "Password",
+                    hint: Text(
+                        "Password ",
+                        style: TextStyle(
+                          color: currentTheme.value
+                              ? Colors.black26
+                              : Colors.white30,
+                        ),
+                      ),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: pwerrClr
                             ? const Color.fromARGB(255, 241, 57, 44)
-                            : Colors.black45,
+                            :currentTheme.value?Colors.black:Colors.white,
                         width: 1.5,
                       ),
                     ),
@@ -146,7 +180,7 @@ class _RegisterState extends State<Register> {
                       borderSide: BorderSide(
                         color: pwerrClr
                             ? const Color.fromARGB(255, 255, 44, 29)
-                            : Colors.black,
+                            :const Color.fromARGB(255, 167, 129, 86),
                         width: pwerrClr ? 1.95 : 1.5,
                       ),
                     ),
@@ -164,15 +198,23 @@ class _RegisterState extends State<Register> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
+                  onChanged: (value) => check(),
                   controller: cpwController,
                   obscureText: true,
                   decoration: InputDecoration(
-                    hintText: "Confirm password",
+                    hint: Text(
+                        "Confirm Password ",
+                        style: TextStyle(
+                          color: currentTheme.value
+                              ? Colors.black26
+                              : Colors.white30,
+                        ),
+                      ),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: pwerrClr
                             ? const Color.fromARGB(255, 241, 57, 44)
-                            : Colors.black45,
+                            : currentTheme.value?Colors.black:Colors.white,
                         width: 1.5,
                       ),
                     ),
@@ -180,7 +222,7 @@ class _RegisterState extends State<Register> {
                       borderSide: BorderSide(
                         color: pwerrClr
                             ? Color.fromARGB(255, 255, 44, 29)
-                            : Colors.black,
+                            :const Color.fromARGB(255, 167, 129, 86),
                         width: pwerrClr ? 1.95 : 1.5,
                       ),
                     ),
@@ -239,7 +281,7 @@ class _RegisterState extends State<Register> {
                       );
                     },
                     child: Text(
-                      "Login",
+                      " Login",
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),

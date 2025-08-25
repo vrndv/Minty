@@ -20,12 +20,36 @@ class ProfilePage extends StatelessWidget {
                   radius: 100,
                   child: Icon(Icons.person_outline_rounded, size: 100),
                 ),
-               Positioned(bottom: 10,right: 10,child: CircleAvatar(backgroundColor: Colors.white,child: Icon(Icons.edit)))
+                Positioned(
+                  bottom: 10,
+                  right: 10,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.edit),
+                  ),
+                ),
               ],
             ),
           ),
         ),
-
+      //THEME BUTTON
+        Container(
+          margin: EdgeInsets.only(top: 10, left: 15, right: 15),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 252, 223, 223),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: GestureDetector(
+            onTap: () {
+            currentTheme.value = !currentTheme.value;
+            },
+            child: ListTile(
+              title: Text("Theme",),
+              subtitle: Text(currentUser.value),
+              trailing: Icon(Icons.dark_mode_rounded),
+            ),
+          ),
+        ),
         //RESET PASSWORD
         Container(
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),

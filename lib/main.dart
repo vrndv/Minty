@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/database.dart';
 import 'package:popapp/screen/auth/authenticate.dart';
 import 'package:popapp/screen/home/home.dart';
@@ -26,48 +27,55 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PopApp',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 141, 92, 2))
-      ),
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          }
-          if (snapshot.hasData) {
-            // Use FutureBuilder to handle async username lookup
-            return FutureBuilder<String>(
-              future: DatabaseService().findUsername(
-                email: snapshot.data!.email!,
-              ),
-              builder: (context, unameSnapshot) {
-                if (unameSnapshot.connectionState == ConnectionState.waiting) {
+    return ValueListenableBuilder(
+      valueListenable: currentTheme,
+      builder: (context, bvalue, child) {
+        return MaterialApp(
+        title: 'PopApp',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor:Colors.deepPurple, brightness: bvalue ? Brightness.light : Brightness.dark ,),
+         
+        ),
+        home: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            }
+            if (snapshot.hasData) {
+              // Use FutureBuilder to handle async username lookup
+              return FutureBuilder<String>(
+                future: DatabaseService().findUsername(
+                  email: snapshot.data!.email!,
+                ),
+                builder: (context, unameSnapshot) {
+                  if (unameSnapshot.connectionState == ConnectionState.waiting) {
+                    return const Scaffold(
+                      body: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  if (unameSnapshot.hasError) {
+                    return Auth();
+                  }
+                  if (unameSnapshot.hasData) {
+                    return DataBaseForm(userEmail: unameSnapshot.data!);
+                  }
                   return const Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
+                    body: Center(child: Text('No username found')),
                   );
-                }
-                if (unameSnapshot.hasError) {
-                  return Auth();
-                }
-                if (unameSnapshot.hasData) {
-                  return DataBaseForm(userEmail: unameSnapshot.data!);
-                }
-                return const Scaffold(
-                  body: Center(child: Text('No username found')),
-                );
-              },
-            );
-          }
-          // User is not signed in
-          return const Auth();
-        },
-      ),
+                },
+              );
+            }
+            // User is not signed in
+            return const Auth();
+          },
+        ),
+      );
+      },
+      
     );
   }
 }

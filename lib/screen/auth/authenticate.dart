@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:popapp/screen/auth/login.dart';
 import 'package:popapp/screen/auth/register.dart';
 import 'package:rive/rive.dart';
-
+import 'package:popapp/dataNotifiers/notifier.dart';
 class Auth extends StatefulWidget {
   const Auth({super.key});
 
@@ -19,7 +17,7 @@ class _AuthState extends State<Auth> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(' PopApp', style: TextStyle(fontSize: 24,color: Colors.black, fontWeight: FontWeight.bold)),
+        title: Text(' PopApp', style: TextStyle(fontSize: 24,color:currentTheme.value ?  Colors.black:Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(40, 175, 173, 173),
       ),
@@ -28,10 +26,17 @@ class _AuthState extends State<Auth> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
              const SizedBox(height: 20),
-           Icon(Icons.api_sharp, size: 100, color: const Color.fromARGB(104, 0, 0, 0)),
-            const Text('Welcome to PopApp', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+           Icon(Icons.all_inclusive, size: 100, color:currentTheme.value ? const Color.fromARGB(104, 0, 0, 0) : const Color.fromARGB(118, 255, 255, 255)),
+             Text('Welcome to PopApp', style: TextStyle(color:currentTheme.value ?  Colors.black:Colors.white,fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 80),
-            const SizedBox(height: 200 ,width: 200 ,child: RiveAnimation.asset('assets/rive/pumping.riv',fit: BoxFit.contain,), ),
+            ColorFiltered(
+              colorFilter:!currentTheme.value?  ColorFilter.matrix([
+                                    -1,  0,  0, 0, 255,
+                                    0, -1,  0, 0, 255,
+                                    0,  0, -1, 0, 255,
+                                    0,  0,  0, 1,   0,
+]): ColorFilter.linearToSrgbGamma(),
+              child: const SizedBox(height: 200 ,width: 200 ,child: RiveAnimation.asset('assets/rive/pumping.riv',fit: BoxFit.contain,speedMultiplier: 1.1,), )),
             Expanded(child: Text(""),),
       
             Center(
@@ -42,12 +47,13 @@ class _AuthState extends State<Auth> {
                       },));
                     },
                     child: Container(
+                    
                       alignment: Alignment.center,
                       height: 50,
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                      decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(5)),
-                      child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
+                      decoration: BoxDecoration(color:currentTheme.value ?  Colors.black:const Color.fromARGB(209, 255, 255, 255),borderRadius: BorderRadius.circular(5)),
+                      child: Text("Login", style: TextStyle(color:currentTheme.value ?  Colors.white:Colors.black, fontSize: 18, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
                     ),
                   ),
                 ),
@@ -63,8 +69,8 @@ class _AuthState extends State<Auth> {
                       height: 50,
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                      decoration: BoxDecoration(color: Colors.black,borderRadius: BorderRadius.circular(5)),
-                      child: Text("Register", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
+                      decoration: BoxDecoration(color:currentTheme.value ?  Colors.black:const Color.fromARGB(199, 255, 255, 255),borderRadius: BorderRadius.circular(5)),
+                      child: Text("Register", style: TextStyle(color:currentTheme.value ?  Colors.white:Colors.black, fontSize: 18, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
                     ),
                   ),
                 ),
