@@ -44,12 +44,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        shadowColor: Colors.black38,
-        elevation: 2,
-        title: Text("Global Chat", style: TextStyle(fontSize: 20)),
-      ),
+      
       body: SafeArea(
         child: Column(
           children: [
@@ -68,7 +63,7 @@ class _ChatPageState extends State<ChatPage> {
               child: Container(
                 margin: EdgeInsets.all(15),
                 padding: EdgeInsets.all(0),
-                height: 30,
+                height: 40,
                 child: Row(
                   children: [
                     Expanded(
@@ -143,38 +138,43 @@ class _ChatPageState extends State<ChatPage> {
           ? Alignment.centerRight
           : Alignment.centerLeft,
       child: IntrinsicWidth(
-        child: Container(
-          margin: data['username'] == currentUser.value
-              ? EdgeInsets.fromLTRB(50, 5, 10, 5)
-              : EdgeInsets.fromLTRB(10, 5, 50, 5),
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: data['username'] == currentUser.value
-                ? Colors.blue[100]
-                : Colors.grey[300],
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                data['username'],
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54,
+        child: GestureDetector(
+          onLongPress: () {
+            msgcontroller.text = data["message"];
+          },
+          child: Container(
+            margin: data['username'] == currentUser.value
+                ? EdgeInsets.fromLTRB(50, 5, 10, 5)
+                : EdgeInsets.fromLTRB(10, 5, 50, 5),
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: data['username'] == currentUser.value
+                  ? Colors.blue[100]
+                  : Colors.grey[300],
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data['username'],
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                  ),
                 ),
-              ),
-              SizedBox(height: 5),
-              Text(data['message']),
-
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  DateFormat('hh:mm a').format(data['time'].toDate()),
-                  style: TextStyle(fontSize: 10, color: Colors.black45),
+                SizedBox(height: 5),
+                Text(data['message']),
+          
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    DateFormat('hh:mm a').format(data['time'].toDate()),
+                    style: TextStyle(fontSize: 10, color: Colors.black45),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

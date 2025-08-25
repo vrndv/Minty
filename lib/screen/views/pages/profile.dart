@@ -10,6 +10,23 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        //AVATAR
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 40.0, bottom: 40),
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  radius: 100,
+                  child: Icon(Icons.person_outline_rounded, size: 100),
+                ),
+               Positioned(bottom: 10,right: 10,child: CircleAvatar(backgroundColor: Colors.white,child: Icon(Icons.edit)))
+              ],
+            ),
+          ),
+        ),
+
+        //RESET PASSWORD
         Container(
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
@@ -55,6 +72,8 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
         ),
+
+        //LOGOUT
         Container(
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
