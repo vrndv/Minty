@@ -61,7 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       : const Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
-              trailing: Icon(Icons.dark_mode_rounded),
+              trailing: Icon(Icons.dark_mode_rounded,color: const Color.fromARGB(207, 0, 0, 0),),
             ),
           ),
         ),
@@ -110,17 +110,17 @@ class _ProfilePageState extends State<ProfilePage> {
               trailing: Icon(
                 Icons.lock_reset,
                 size: 26,
-                color: const Color.fromARGB(255, 0, 0, 0),
+                color: const Color.fromARGB(204, 0, 0, 0),
               ),
             ),
           ),
         ),
-
+      
         //LOGOUT
         Container(
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
-            color:currentTheme.value ? const Color.fromARGB(255, 252, 223, 223) :  const Color.fromARGB(255, 51, 31, 31),
+            color:currentTheme.value ? const Color.fromARGB(255, 252, 223, 223) :  const Color.fromARGB(255, 66, 33, 33),
             borderRadius: BorderRadius.circular(8),
           ),
           child: GestureDetector(
@@ -140,7 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
               subtitle: Text(currentUser.value,style: TextStyle(color:currentTheme.value
                       ? const Color.fromARGB(255, 0, 0, 0)
                       : const Color.fromARGB(255, 255, 156, 156),),),
-              trailing: Icon(Icons.logout_rounded, color: Colors.red),
+              trailing: Icon(Icons.logout_rounded, color: const Color.fromARGB(199, 244, 67, 54)),
             ),
           ),
         ),

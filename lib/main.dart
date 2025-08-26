@@ -34,7 +34,7 @@ class _MainAppState extends State<MainApp> {
         title: 'PopApp',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor:Colors.deepPurple, brightness: bvalue ? Brightness.light : Brightness.dark ,),
+          colorScheme: ColorScheme.fromSeed(seedColor:const Color.fromARGB(255, 0, 132, 255), brightness: bvalue ? Brightness.light : Brightness.dark ,),
          
         ),
         home: StreamBuilder<User?>(
