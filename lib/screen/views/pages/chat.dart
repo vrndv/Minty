@@ -92,9 +92,9 @@ class _ChatPageState extends State<ChatPage> {
                           width: 40,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: const Color.fromARGB(24, 0, 0, 0),
+                            color:currentTheme.value ?  Color.fromARGB(24, 0, 0, 0): Color.fromARGB(23, 109, 108, 108),
                           ),
-                          child: Icon(Icons.send),
+                          child: Icon(Icons.send,),
                         ),
                       ),
                     ],

@@ -49,7 +49,7 @@ class _DataBaseFormState extends State<DataBaseForm> {
             padding: const EdgeInsets.only(right: 10.0),
             child: Text(
               widget.userEmail,
-              style: const TextStyle(fontSize: 18, color: Colors.black),
+              style:  TextStyle(fontSize: 18, color:currentTheme.value? Colors.black : Colors.white70),
             ),
           ),
         ],
