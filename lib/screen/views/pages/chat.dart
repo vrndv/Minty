@@ -156,7 +156,7 @@ class _ChatPageState extends State<ChatPage> {
             decoration: BoxDecoration(
               color: data['username'] == currentUser.value
                   ? Colors.blue[100]
-                  : currentTheme.value ?  Colors.grey[300] :Colors.grey[50],
+                  : currentTheme.value ?  Colors.grey[300] :const Color.fromARGB(255, 35, 36, 35),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -165,18 +165,25 @@ class _ChatPageState extends State<ChatPage> {
                 Text(
                   data['username'],
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54,
+                    fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.italic,
+                    color:data['username'] == currentUser.value
+                  ? const Color.fromARGB(255, 73, 72, 134)
+                  : currentTheme.value ?  const Color.fromARGB(255, 75, 75, 75) :const Color.fromARGB(255, 233, 233, 233),
                   ),
                 ),
                 SizedBox(height: 5),
-                Text(data['message']),
+                Text(data['message'],style: TextStyle(color: data['username'] == currentUser.value
+                  ? const Color.fromARGB(255, 0, 0, 0)
+                  : currentTheme.value ?  const Color.fromARGB(255, 75, 75, 75) :const Color.fromARGB(255, 233, 233, 233),),),
           
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
                     DateFormat('hh:mm a').format(data['time'].toDate()),
-                    style: TextStyle(fontSize: 10, color: Colors.black45),
+                    style: TextStyle(fontSize: 10, color: data['username'] == currentUser.value
+                  ? const Color.fromARGB(255, 73, 72, 134)
+                  : currentTheme.value ?  const Color.fromARGB(255, 75, 75, 75) :const Color.fromARGB(255, 233, 233, 233),),
                   ),
                 ),
               ],

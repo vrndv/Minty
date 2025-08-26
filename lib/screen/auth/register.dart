@@ -281,7 +281,7 @@ class _RegisterState extends State<Register> {
                       );
                     },
                     child: Text(
-                      " Login",
+                      " >Login",
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
