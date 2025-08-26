@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/screen/auth/authenticate.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -25,27 +30,37 @@ class ProfilePage extends StatelessWidget {
                   right: 10,
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
-                    child: Icon(Icons.edit),
+                    child: Icon(Icons.edit,color: Colors.black,),
                   ),
                 ),
               ],
             ),
           ),
         ),
-      //THEME BUTTON
+        //THEME BUTTON
         Container(
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 252, 223, 223),
+            color: currentTheme.value
+                ? const Color.fromARGB(113, 163, 163, 163)
+                : const Color.fromARGB(151, 255, 255, 255),
             borderRadius: BorderRadius.circular(8),
           ),
           child: GestureDetector(
             onTap: () {
-            currentTheme.value = !currentTheme.value;
+              setState(() {
+                currentTheme.value = !currentTheme.value;
+              });
             },
             child: ListTile(
-              title: Text("Theme",),
-              subtitle: Text(currentUser.value),
+              title: Text(
+                "Theme",
+                style: TextStyle(
+                  color: currentTheme.value
+                      ? const Color.fromARGB(255, 0, 0, 0)
+                      : const Color.fromARGB(255, 0, 0, 0),
+                ),
+              ),
               trailing: Icon(Icons.dark_mode_rounded),
             ),
           ),
@@ -54,7 +69,9 @@ class ProfilePage extends StatelessWidget {
         Container(
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
-            color: const Color.fromARGB(50, 114, 114, 114),
+            color: currentTheme.value
+                ? const Color.fromARGB(113, 163, 163, 163)
+                : const Color.fromARGB(151, 255, 255, 255),
             borderRadius: BorderRadius.circular(8),
           ),
           child: GestureDetector(
@@ -85,7 +102,9 @@ class ProfilePage extends StatelessWidget {
             child: ListTile(
               title: Text(
                 "Reset Paassword",
-                style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                style: TextStyle(color:currentTheme.value
+                      ? const Color.fromARGB(255, 0, 0, 0)
+                      : const Color.fromARGB(255, 0, 0, 0),),
               ),
 
               trailing: Icon(
@@ -101,7 +120,7 @@ class ProfilePage extends StatelessWidget {
         Container(
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 252, 223, 223),
+            color:currentTheme.value ? const Color.fromARGB(255, 252, 223, 223) :  const Color.fromARGB(255, 51, 31, 31),
             borderRadius: BorderRadius.circular(8),
           ),
           child: GestureDetector(
@@ -118,7 +137,9 @@ class ProfilePage extends StatelessWidget {
             },
             child: ListTile(
               title: Text("Logout", style: TextStyle(color: Colors.red)),
-              subtitle: Text(currentUser.value),
+              subtitle: Text(currentUser.value,style: TextStyle(color:currentTheme.value
+                      ? const Color.fromARGB(255, 0, 0, 0)
+                      : const Color.fromARGB(255, 255, 156, 156),),),
               trailing: Icon(Icons.logout_rounded, color: Colors.red),
             ),
           ),
