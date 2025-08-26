@@ -70,6 +70,7 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(
             builder: (context) {
+               currentPageNotifier.value = 0;
               return DataBaseForm(userEmail: uname);
             },
           ),
@@ -80,6 +81,7 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(
             builder: (context) {
+              currentPageNotifier.value = 0;
               return UpdateInfo(userEmail: email);
             },
           ),
