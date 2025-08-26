@@ -64,9 +64,9 @@ class _ChatPageState extends State<ChatPage> {
                     },
                 },
                 child: Container(
-                  margin: EdgeInsets.all(15),
-                  padding: EdgeInsets.all(0),
-                  height: 40,
+                  color: const Color.fromARGB(125, 12, 12, 12),
+                  padding: EdgeInsets.all(13),
+                  height: 70,
                   child: Row(
                     children: [
                       Expanded(

@@ -132,7 +132,7 @@ class _RegisterState extends State<Register> {
                       borderSide: BorderSide(
                         color: emailerrClr
                             ? const Color.fromARGB(255, 241, 57, 44)
-                            :currentTheme.value?Colors.black:Colors.white,
+                            : const Color.fromARGB(82, 255, 254, 254),
                         width: 1.5,
                       ),
                     ),
@@ -172,7 +172,7 @@ class _RegisterState extends State<Register> {
                       borderSide: BorderSide(
                         color: pwerrClr
                             ? const Color.fromARGB(255, 241, 57, 44)
-                            :currentTheme.value?Colors.black:Colors.white,
+                            : const Color.fromARGB(82, 255, 254, 254),
                         width: 1.5,
                       ),
                     ),
@@ -214,7 +214,7 @@ class _RegisterState extends State<Register> {
                       borderSide: BorderSide(
                         color: pwerrClr
                             ? const Color.fromARGB(255, 241, 57, 44)
-                            : currentTheme.value?Colors.black:Colors.white,
+                            :  const Color.fromARGB(82, 255, 254, 254),
                         width: 1.5,
                       ),
                     ),
@@ -281,7 +281,7 @@ class _RegisterState extends State<Register> {
                       );
                     },
                     child: Text(
-                      " >Login",
+                      " Login",
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),

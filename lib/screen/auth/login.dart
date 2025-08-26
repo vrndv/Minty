@@ -130,7 +130,7 @@ class _LoginState extends State<Login> {
                         borderSide: BorderSide(
                           color: currentTheme.value
                               ? Colors.black
-                              : Colors.white,
+                              : const Color.fromARGB(82, 255, 254, 254),
                           width: 1.5,
                         ),
                       ),
@@ -173,7 +173,14 @@ class _LoginState extends State<Login> {
                           width: 1.5,
                         ),
                       ),
-
+                       enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: currentTheme.value
+                              ? Colors.black
+                              : const Color.fromARGB(82, 255, 254, 254),
+                          width: 1.5,
+                        ),
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),
