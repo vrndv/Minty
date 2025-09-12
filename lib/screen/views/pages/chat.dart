@@ -7,8 +7,8 @@ import 'package:popapp/services/chat_services.dart';
 import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
-
+  final String roomID;
+  const ChatPage({super.key, required this.roomID});
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
@@ -16,11 +16,15 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   //chat services
   final _chatServices = ChatServices();
+
   final TextEditingController msgcontroller = TextEditingController();
   //Send Message
   Future<void> sendMessage() async {
     if (msgcontroller.text.isNotEmpty) {
-      await _chatServices.sendMessage(message: msgcontroller.text);
+      await _chatServices.sendMessage(
+        message: msgcontroller.text,
+        roomID: widget.roomID,
+      );
       msgcontroller.clear();
       scrollDown();
     }
@@ -47,72 +51,77 @@ class _ChatPageState extends State<ChatPage> {
       valueListenable: currentTheme,
       builder: (context, value, child) {
         return Scaffold(
-        
-        body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(child: _buildMessageList()),
-      
-              KeyboardVisibility(
-                onChanged: (p0) => {
-                  if (p0 == true)
-                    {
-                      Future.delayed(
-                        const Duration(milliseconds: 150),
-                        () => scrollDown(time: 250),
-                      ),
-                    },
-                },
-                child: Container(
-                  color: const Color.fromARGB(125, 12, 12, 12),
-                  padding: EdgeInsets.all(13),
-                  height: 70,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(right: 10),
-                          child: TextField(
-                            controller: msgcontroller,
-                            decoration: InputDecoration(
-                              hintText: value ? "Message" : "Enter Message",
-                              contentPadding: EdgeInsets.only(top: 10, left: 10),
-                              border: OutlineInputBorder(),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(child: _buildMessageList()),
+
+                KeyboardVisibility(
+                  onChanged: (p0) => {
+                    if (p0 == true)
+                      {
+                        Future.delayed(
+                          const Duration(milliseconds: 150),
+                          () => scrollDown(time: 250),
+                        ),
+                      },
+                  },
+                  child: Container(
+                    color: currentTheme.value
+                        ? const Color.fromARGB(57, 165, 164, 164)
+                        : const Color.fromARGB(125, 12, 12, 12),
+                    padding: EdgeInsets.all(13),
+                    height: 70,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(right: 10),
+                            child: TextField(
+                              controller: msgcontroller,
+                              decoration: InputDecoration(
+                                hintText: value ? "Message" : "Enter Message",
+                                contentPadding: EdgeInsets.only(
+                                  top: 10,
+                                  left: 10,
+                                ),
+                                border: OutlineInputBorder(),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-      
-                      GestureDetector(
-                        onTap: () {
-                          sendMessage();
-                        },
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color:currentTheme.value ?  Color.fromARGB(24, 0, 0, 0): Color.fromARGB(23, 109, 108, 108),
+
+                        GestureDetector(
+                          onTap: () {
+                            sendMessage();
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: currentTheme.value
+                                  ? Color.fromARGB(24, 0, 0, 0)
+                                  : Color.fromARGB(23, 109, 108, 108),
+                            ),
+                            child: Icon(Icons.send),
                           ),
-                          child: Icon(Icons.send,),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
+        );
       },
- 
     );
   }
 
   Widget _buildMessageList() {
     return StreamBuilder(
-      stream: _chatServices.getMessage(),
+      stream: _chatServices.getMessage(roomID: widget.roomID),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Text("Error");
@@ -156,34 +165,52 @@ class _ChatPageState extends State<ChatPage> {
             decoration: BoxDecoration(
               color: data['username'] == currentUser.value
                   ? Colors.blue[100]
-                  : currentTheme.value ?  Colors.grey[300] :const Color.fromARGB(255, 35, 36, 35),
+                  : currentTheme.value
+                  ? Colors.grey[300]
+                  : const Color.fromARGB(255, 35, 36, 35),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  data['username'],
+                  data['username'] == currentUser.value
+                      ? "You"
+                      : data['username'],
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontStyle: FontStyle.italic,
-                    color:data['username'] == currentUser.value
-                  ? const Color.fromARGB(255, 73, 72, 134)
-                  : currentTheme.value ?  const Color.fromARGB(255, 75, 75, 75) :const Color.fromARGB(255, 233, 233, 233),
+                    color: data['username'] == currentUser.value
+                        ? const Color.fromARGB(255, 73, 72, 134)
+                        : currentTheme.value
+                        ? const Color.fromARGB(255, 75, 75, 75)
+                        : const Color.fromARGB(255, 233, 233, 233),
                   ),
                 ),
                 SizedBox(height: 5),
-                Text(data['message'],style: TextStyle(color: data['username'] == currentUser.value
-                  ? const Color.fromARGB(255, 0, 0, 0)
-                  : currentTheme.value ?  const Color.fromARGB(255, 75, 75, 75) :const Color.fromARGB(255, 233, 233, 233),),),
-          
+                Text(
+                  data['message'],
+                  style: TextStyle(
+                    color: data['username'] == currentUser.value
+                        ? const Color.fromARGB(255, 0, 0, 0)
+                        : currentTheme.value
+                        ? const Color.fromARGB(255, 75, 75, 75)
+                        : const Color.fromARGB(255, 233, 233, 233),
+                  ),
+                ),
+
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
                     DateFormat('hh:mm a').format(data['time'].toDate()),
-                    style: TextStyle(fontSize: 10, color: data['username'] == currentUser.value
-                  ? const Color.fromARGB(255, 73, 72, 134)
-                  : currentTheme.value ?  const Color.fromARGB(255, 75, 75, 75) :const Color.fromARGB(255, 233, 233, 233),),
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: data['username'] == currentUser.value
+                          ? const Color.fromARGB(255, 73, 72, 134)
+                          : currentTheme.value
+                          ? const Color.fromARGB(255, 75, 75, 75)
+                          : const Color.fromARGB(255, 233, 233, 233),
+                    ),
                   ),
                 ),
               ],

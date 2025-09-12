@@ -71,7 +71,9 @@ class _LoginState extends State<Login> {
           MaterialPageRoute(
             builder: (context) {
                currentPageNotifier.value = 0;
-              return DataBaseForm(userEmail: uname);
+                currentUser.value = uname;
+                userID.value = FirebaseAuth.instance.currentUser!.uid;
+              return DataBaseForm(userEmail: uname, page: 0,);
             },
           ),
           (route) => false,

@@ -28,9 +28,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 Positioned(
                   bottom: 10,
                   right: 10,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.edit,color: Colors.black,),
+                  child: GestureDetector(
+                    onTap: () => showSnackBar(msg: "🚧 Coming soon..."),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.edit, color: Colors.black),
+                    ),
                   ),
                 ),
               ],
@@ -61,7 +64,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       : const Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
-              trailing: Icon(Icons.dark_mode_rounded,color: const Color.fromARGB(207, 0, 0, 0),),
+              trailing: Icon(
+                Icons.dark_mode_rounded,
+                color: const Color.fromARGB(207, 0, 0, 0),
+              ),
             ),
           ),
         ),
@@ -79,32 +85,20 @@ class _ProfilePageState extends State<ProfilePage> {
               await FirebaseAuth.instance.sendPasswordResetEmail(
                 email: currentEmail.value,
               );
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Reset link sent to: ${currentEmail.value}\nChech Spam folders ",
-                  ),
-                  duration: Duration(seconds: 5),
-                ),
-              );
+              showSnackBar(msg: "Reset link sent to: ${currentEmail.value}\nChech Spam folders ");
               await Future.delayed(Duration(seconds: 4));
               FirebaseAuth.instance.signOut();
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return Auth();
-                  },
-                ),
-              );
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const Auth(),), (Route<dynamic> route) =>false);
             },
             child: ListTile(
               title: Text(
-                "Reset Paassword",
-                style: TextStyle(color:currentTheme.value
+                "Reset Password",
+                style: TextStyle(
+                  color: currentTheme.value
                       ? const Color.fromARGB(255, 0, 0, 0)
-                      : const Color.fromARGB(255, 0, 0, 0),),
+                      : const Color.fromARGB(255, 0, 0, 0),
+                ),
               ),
 
               trailing: Icon(
@@ -115,12 +109,14 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ),
-      
+
         //LOGOUT
         Container(
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
-            color:currentTheme.value ? const Color.fromARGB(255, 252, 223, 223) :  const Color.fromARGB(255, 66, 33, 33),
+            color: currentTheme.value
+                ? const Color.fromARGB(255, 252, 223, 223)
+                : const Color.fromARGB(255, 66, 33, 33),
             borderRadius: BorderRadius.circular(8),
           ),
           child: GestureDetector(
@@ -137,14 +133,31 @@ class _ProfilePageState extends State<ProfilePage> {
             },
             child: ListTile(
               title: Text("Logout", style: TextStyle(color: Colors.red)),
-              subtitle: Text(currentUser.value,style: TextStyle(color:currentTheme.value
+              subtitle: Text(
+                currentUser.value,
+                style: TextStyle(
+                  color: currentTheme.value
                       ? const Color.fromARGB(255, 0, 0, 0)
-                      : const Color.fromARGB(255, 255, 156, 156),),),
-              trailing: Icon(Icons.logout_rounded, color: const Color.fromARGB(199, 244, 67, 54)),
+                      : const Color.fromARGB(255, 255, 156, 156),
+                ),
+              ),
+              trailing: Icon(
+                Icons.logout_rounded,
+                color: const Color.fromARGB(199, 244, 67, 54),
+              ),
             ),
           ),
         ),
       ],
     );
   }
-}
+  void showSnackBar({required String msg}){
+  ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    msg,
+                  ),
+                  duration: Duration(seconds: 5),
+                ),
+              );
+}}

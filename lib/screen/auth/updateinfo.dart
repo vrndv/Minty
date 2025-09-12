@@ -1,24 +1,30 @@
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/database.dart';
 import 'package:popapp/screen/home/home.dart';
 
 class UpdateInfo extends StatefulWidget {
   final String userEmail;
-
   const UpdateInfo({super.key, required this.userEmail});
-
+  
   @override
   State<UpdateInfo> createState() => _UpdateInfoState();
 }
 
 class _UpdateInfoState extends State<UpdateInfo> {
   String err = " ";
+  String uid = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     TextEditingController nameController = new TextEditingController();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Username"),
+        title: Text("Username",style: TextStyle(color:currentTheme.value
+                              ? const Color.fromARGB(242, 255, 253, 253)
+                              : const Color.fromARGB(255, 0, 0, 0),),),
+        
         elevation: 5.0,
         shadowColor: const Color.fromARGB(82, 0, 0, 0),
         backgroundColor: const Color.fromARGB(255, 250, 250, 250),
@@ -34,15 +40,14 @@ class _UpdateInfoState extends State<UpdateInfo> {
               child: TextField(
                 controller: nameController,
                 decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black, width: 1.95),
-                  ),
                   hintText: "Username",
                   hintStyle: TextStyle(
-                    color: const Color.fromARGB(55, 0, 0, 0),
+                    color: currentTheme.value
+                              ? Colors.black26
+                              : Colors.white30,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(width: 1.5, color: Colors.black45),
+                    borderSide: BorderSide(width: 1.5, color:const Color.fromARGB(82, 255, 254, 254)),
                   ),
                 ),
               ),
@@ -68,6 +73,7 @@ class _UpdateInfoState extends State<UpdateInfo> {
                       data: {
                         "username": nameController.text,
                         "email": widget.userEmail,
+                        "uid" :uid,
                       },
                     );
                     if (isWritten == true) {
@@ -76,13 +82,14 @@ class _UpdateInfoState extends State<UpdateInfo> {
                       });
                     } else {
                       setState(() {
-                        err = "Data written successfully";
+                        err = "";
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
                               return DataBaseForm(
-                                userEmail: nameController.text,
+                                userEmail: nameController.text, page: 0,
                               );
                             },
                           ),

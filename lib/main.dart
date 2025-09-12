@@ -6,14 +6,13 @@ import 'package:popapp/screen/auth/authenticate.dart';
 import 'package:popapp/screen/home/home.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rive/rive.dart';
+
 
 //Just to save point ,the username adding option is currently situated in homescreen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await RiveFile.initialize();
   runApp(const MainApp());
 }
 
@@ -61,7 +60,9 @@ class _MainAppState extends State<MainApp> {
                     return Auth();
                   }
                   if (unameSnapshot.hasData) {
-                    return DataBaseForm(userEmail: unameSnapshot.data!);
+                    userID.value = FirebaseAuth.instance.currentUser!.uid;
+                    currentUser.value = unameSnapshot.data!;
+                    return DataBaseForm(userEmail: unameSnapshot.data!, page: 0,);
                   }
                   return const Scaffold(
                     body: Center(child: Text('No username found')),

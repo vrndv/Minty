@@ -7,7 +7,7 @@ class ChatServices {
 
 
 
-  Future<void> sendMessage({required message}) async {
+  Future<void> sendMessage({required String message , required String roomID}) async {
     final String username = currentUser.value;
     final Timestamp time = Timestamp.now();
 
@@ -18,17 +18,27 @@ class ChatServices {
     );
     await _firestore
         .collection("chats")
-        .doc("global")
+        .doc(roomID)
         .collection("messages")
         .add(newMessage.toMap());
   }
 
-  Stream<QuerySnapshot> getMessage() {
+  Stream<QuerySnapshot> getMessage({required String roomID}) {
     return _firestore
         .collection("chats")
-        .doc("global")
+        .doc(roomID)
         .collection("messages")
         .orderBy("time", descending: false)
+        .snapshots();
+  }
+}
+
+class UserServices{
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Stream<QuerySnapshot> getUsers() {
+    return _firestore
+        .collection("user")
         .snapshots();
   }
 }

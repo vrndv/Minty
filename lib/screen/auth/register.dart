@@ -40,7 +40,6 @@ class _RegisterState extends State<Register> {
       });
       
     }
-    print(pwerrClr);
   }
 
   Future<void> register() async {
@@ -59,7 +58,8 @@ class _RegisterState extends State<Register> {
           email: emailController.text,
           password: pwController.text,
         );
-        setState(() {
+        
+        setState(() async{
           emailerrClr = false;
           Navigator.pushReplacement(
             context,
