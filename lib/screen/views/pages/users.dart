@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/screen/home/home.dart';
-import 'package:popapp/screen/home/navbar.dart';
-import 'package:popapp/screen/views/pages/chat.dart';
 import 'package:popapp/services/chat_services.dart';
 
 class Users extends StatefulWidget {
@@ -30,40 +27,15 @@ class _UsersState extends State<Users> {
     return Scaffold(
       body: Column(
         children: [
-          GestureDetector(
+          SearchBar(
             onTap: () {
               isSearch.value = true;
               setState(() {});
             },
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    color: const Color.fromARGB(0, 0, 0, 0),
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    height: 50,
-                    child: Stack(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsetsGeometry.only(left: 20),
-                            child: Text(
-                              "Search",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Icon(Icons.search),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+
+            hintText: "Search",
+            leading: Icon(Icons.search),
+            onChanged: (value) => print(value),
           ),
           Expanded(child: _buildUserList()),
         ],
@@ -129,15 +101,5 @@ class _UsersState extends State<Users> {
     );
   }
 
-  Widget userChatPage({required String u1, required String u2}) {
-    if (u1 == u2) {
-      final roomID = "global";
-      return ChatPage(roomID: roomID);
-    } else {
-      final List<String> ids = [u1, u2];
-      ids.sort();
-      final roomID = ids.join("_");
-      return ChatPage(roomID: roomID);
-    }
-  }
+ 
 }

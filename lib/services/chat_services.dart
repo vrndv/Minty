@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/models/message.dart';
+import 'package:popapp/screen/views/pages/chat.dart';
 
 class ChatServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -42,3 +43,15 @@ class UserServices{
         .snapshots();
   }
 }
+
+ ChatPage userChatPage({required String u1, required String u2}) {
+    if (u1 == u2) {
+      final roomID = "global";
+      return ChatPage(roomID: roomID);
+    } else {
+      final List<String> ids = [u1, u2];
+      ids.sort();
+      final roomID = ids.join("_");
+      return ChatPage(roomID: roomID);
+    }
+  }

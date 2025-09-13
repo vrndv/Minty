@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
   final String roomID;
+
   const ChatPage({super.key, required this.roomID});
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -16,13 +17,13 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   //chat services
   final _chatServices = ChatServices();
-
+  ScrollController _scrollController = ScrollController();
   final TextEditingController msgcontroller = TextEditingController();
   //Send Message
-  Future<void> sendMessage() async {
-    if (msgcontroller.text.isNotEmpty) {
+  Future<void> sendMessage(String msg) async {
+    if (msgcontroller.text.isNotEmpty || msg.isNotEmpty) {
       await _chatServices.sendMessage(
-        message: msgcontroller.text,
+        message: msgcontroller.text.isEmpty? msg : msgcontroller.text,
         roomID: widget.roomID,
       );
       msgcontroller.clear();
@@ -35,13 +36,21 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
   }
 
-  final ScrollController _scrollController = ScrollController();
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void scrollDown({int time = 300}) {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: Duration(milliseconds: time),
-      curve: Curves.fastOutSlowIn,
-    );
+    // Add this check before scrolling
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: time),
+        curve: Curves.fastOutSlowIn,
+      );
+    }
   }
 
   // final keyboardVisibilityController = Flutter
@@ -93,7 +102,7 @@ class _ChatPageState extends State<ChatPage> {
 
                         GestureDetector(
                           onTap: () {
-                            sendMessage();
+                            sendMessage("");
                           },
                           child: Container(
                             height: 40,
@@ -119,6 +128,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  // Modify your StreamBuilder's builder to handle scrolling after build
   Widget _buildMessageList() {
     return StreamBuilder(
       stream: _chatServices.getMessage(roomID: widget.roomID),
@@ -129,11 +139,40 @@ class _ChatPageState extends State<ChatPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Text("...");
         }
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => _scrollController.jumpTo(
-            _scrollController.position.maxScrollExtent,
-          ),
-        );
+        if (snapshot.data!.docs.isEmpty) {
+          return Center(
+            child: GestureDetector(
+              onTap: () {
+                sendMessage("Hi,I'm ${currentUser.value}!");
+              },
+              child: Row(
+                
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Say ", style: TextStyle(fontSize: 20)),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color.fromARGB(255, 37, 37, 37),
+                    ),
+                    child: Text("Hi !", style: TextStyle(fontSize: 17)),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Move this into a post-frame callback
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_scrollController.hasClients) {
+            _scrollController.jumpTo(
+              _scrollController.position.maxScrollExtent,
+            );
+          }
+        });
+
         return ListView(
           controller: _scrollController,
           children: snapshot.data!.docs
