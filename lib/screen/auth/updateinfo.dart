@@ -83,7 +83,7 @@ class _UpdateInfoState extends State<UpdateInfo> {
                     } else {
                       setState(() {
                         err = "";
-
+                        userID.value =  FirebaseAuth.instance.currentUser!.uid;
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
