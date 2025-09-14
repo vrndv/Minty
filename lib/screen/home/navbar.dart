@@ -26,6 +26,7 @@ class _NavbarState extends State<Navbar> {
           selectedIndex: currentPage,
           onDestinationSelected: (value) {
             currentPageNotifier.value = value;
+            isSearch.value = false;
           },
         );
       },
