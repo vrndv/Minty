@@ -42,7 +42,7 @@ class _RegisterState extends State<Register> {
     }
   }
 
-  Future<void> register() async {
+   void register() async {
     err = "";
     if (pwController.text != cpwController.text) {
       setState(() {
@@ -59,8 +59,8 @@ class _RegisterState extends State<Register> {
           password: pwController.text,
         );
         
-        setState(() async{
           emailerrClr = false;
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -69,7 +69,7 @@ class _RegisterState extends State<Register> {
               },
             ),
           );
-        });
+      
       } on FirebaseAuthException catch (e) {
         setState(() {
           if (e.code == 'weak-password') {
