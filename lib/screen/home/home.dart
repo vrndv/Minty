@@ -73,7 +73,7 @@ class _DataBaseFormState extends State<DataBaseForm> {
 
   @override
   void dispose() {
-    currentPageNotifier.value= widget.page;
+    currentPageNotifier.value= 0;
     print("bye world");
     super.dispose();
   }
