@@ -125,6 +125,10 @@ class _UpdateInfoState extends State<UpdateInfo> {
 
   bool isValidUsername(String username) {
     final validUsernameRegex = RegExp(r'^[a-zA-Z0-9_]+$');
-    return validUsernameRegex.hasMatch(username);
+    if(validUsernameRegex.hasMatch(username) && !username.toLowerCase().contains("niga") && !username.toLowerCase().contains("nigga") && !username.toLowerCase().contains("gay")){
+      return true;
+    } else {
+      return false;
+    }
   }
 }
