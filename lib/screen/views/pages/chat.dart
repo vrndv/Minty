@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/services/chat_services.dart';
 import 'package:intl/intl.dart';
+import 'package:popapp/services/profanity.dart';
 
 class ChatPage extends StatefulWidget {
   final String roomID;
@@ -17,13 +18,33 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   //chat services
   final _chatServices = ChatServices();
+
   ScrollController _scrollController = ScrollController();
   final TextEditingController msgcontroller = TextEditingController();
   //Send Message
   Future<void> sendMessage(String msg) async {
     if (msgcontroller.text.isNotEmpty || msg.isNotEmpty) {
+      if (widget.roomID == 'global' && ProfanityFilter.containsProfanity(msgcontroller.text)  && isProfanity.value) {
+        msgcontroller.text = ProfanityFilter.censorText(msgcontroller.text);
+        showDialog(
+          context: context, 
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: const Color.fromARGB(155, 121, 3, 3),
+              title: Text("Warning"),
+              content: Text("Usage of swear words might result in ban"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text("Understood"),
+                ),
+              ],
+            );
+          },
+        );
+      }
       await _chatServices.sendMessage(
-        message: msgcontroller.text.isEmpty? msg : msgcontroller.text,
+        message: msgcontroller.text.isEmpty ? msg : msgcontroller.text,
         roomID: widget.roomID,
       );
       msgcontroller.clear();
@@ -31,11 +52,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
+ 
   @override
   void dispose() {
     _scrollController.dispose();
@@ -146,7 +163,6 @@ class _ChatPageState extends State<ChatPage> {
                 sendMessage("Hi,I'm ${currentUser.value}!");
               },
               child: Row(
-                
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("Say ", style: TextStyle(fontSize: 20)),
