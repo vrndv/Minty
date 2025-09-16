@@ -7,3 +7,6 @@ ValueNotifier<String> currentEmail = ValueNotifier("guest@gmail.com");
 ValueNotifier<bool> currentTheme = ValueNotifier(false); //true = light
 ValueNotifier<String> userID = ValueNotifier("Null");
 ValueNotifier<bool> isSearch=ValueNotifier(false);
+ValueNotifier<bool> isProfanity=ValueNotifier(true);
+ValueNotifier<int> newVer = ValueNotifier(1);
+ValueNotifier<int> currVer = ValueNotifier(21);

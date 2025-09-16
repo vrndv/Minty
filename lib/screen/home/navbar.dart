@@ -20,7 +20,29 @@ class _NavbarState extends State<Navbar> {
               icon: Icon(Icons.chat_rounded),
               label: "Chats",
             ),
-            NavigationDestination(icon: Icon(Icons.person), label: "Profile"),
+            NavigationDestination(icon: SizedBox(
+                height: 25,
+                width: 25,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      Icons.person,
+                    ),
+
+                    (currVer.value < newVer.value)
+                        ? Align(
+                            alignment: Alignment.topRight,
+                            child: Icon(
+                              Icons.lens_rounded,
+                              color: Colors.red,
+                              size: 7,
+                            ),
+                          )
+                        : Text(""),
+                  ],
+                ),
+              ), label: "Profile"),
           ],
           height: 70,
           selectedIndex: currentPage,

@@ -60,7 +60,7 @@ class _MainAppState extends State<MainApp> {
                     return Auth();
                   }
                   if (unameSnapshot.hasData) {
-                    userID.value = FirebaseAuth.instance.currentUser!.uid;
+                    userID.value = FirebaseAuth.instance.currentUser!.uid; 
                     currentUser.value = unameSnapshot.data!;
                     return DataBaseForm(userEmail: unameSnapshot.data!, page: 0,);
                   }
