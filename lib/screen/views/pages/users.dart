@@ -58,7 +58,7 @@ class _UsersState extends State<Users> {
                     ),
                   );
                 },
-                backgroundColor:Theme.of(context).colorScheme.onSecondaryContainer,
+                backgroundColor:Theme.of(context).colorScheme.outlineVariant,
                 child: Icon(
                   Icons.public_sharp,
                   color: currentTheme.value ? Colors.black : Colors.white,
@@ -104,7 +104,7 @@ class _UsersState extends State<Users> {
     Map usernames = data["usernames"] ?? {};
 
     // Defensive fallback if something's missing
-    if (participants.isEmpty || !usernames.containsKey(userID.value)) {
+    if (participants.isEmpty || !usernames.containsKey(userID.value) || usernames.containsKey("global")) {
       return const SizedBox.shrink();
     }
 
