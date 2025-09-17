@@ -85,7 +85,7 @@ class _searchPageState extends State<searchPage> {
                               builder: (context) {
                                 return userChatPage(
                                   u1: data["uid"],
-                                  u2: userID.value,
+                                  u2: userID.value, senderUsername: currentUser.value, receiverUsername: data["username"],
                                 );
                               },
                             ),

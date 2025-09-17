@@ -9,8 +9,23 @@ import 'package:popapp/services/profanity.dart';
 
 class ChatPage extends StatefulWidget {
   final String roomID;
+  
+  final String senderUid;
+  
+  final String receiverUsername;
+  
+  final String senderUsername;
+  
+  final String receiverUid;
 
-  const ChatPage({super.key, required this.roomID});
+  const ChatPage({
+    super.key,
+    required this.roomID,
+    required String this.senderUid,
+    required String this.receiverUid,
+    required String this.senderUsername,
+    required String this.receiverUsername,
+  });
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
@@ -24,10 +39,12 @@ class _ChatPageState extends State<ChatPage> {
   //Send Message
   Future<void> sendMessage(String msg) async {
     if (msgcontroller.text.isNotEmpty || msg.isNotEmpty) {
-      if (widget.roomID == 'global' && ProfanityFilter.containsProfanity(msgcontroller.text)  && isProfanity.value) {
+      if (widget.roomID == 'global' &&
+          ProfanityFilter.containsProfanity(msgcontroller.text) &&
+          isProfanity.value) {
         msgcontroller.text = ProfanityFilter.censorText(msgcontroller.text);
         showDialog(
-          context: context, 
+          context: context,
           builder: (context) {
             return AlertDialog(
               backgroundColor: const Color.fromARGB(155, 121, 3, 3),
@@ -46,13 +63,16 @@ class _ChatPageState extends State<ChatPage> {
       await _chatServices.sendMessage(
         message: msgcontroller.text.isEmpty ? msg : msgcontroller.text,
         roomID: widget.roomID,
+        senderUid: userID.value,
+        receiverUid:  widget.receiverUid,
+        senderUsername:  currentUser.value,
+        receiverUsername:  widget.receiverUsername,
       );
       msgcontroller.clear();
       scrollDown();
     }
   }
 
- 
   @override
   void dispose() {
     _scrollController.dispose();

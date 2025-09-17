@@ -38,6 +38,34 @@ class _UsersState extends State<Users> {
             onChanged: (value) => print(value),
           ),
           Expanded(child: _buildUserList()),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 10, right: 10),
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return userChatPage(
+                          u1: "global",
+                          u2: "global",
+                          senderUsername: currentUser.value,
+                          receiverUsername: "global",
+                        );
+                      },
+                    ),
+                  );
+                },
+                backgroundColor:Theme.of(context).colorScheme.onSecondaryContainer,
+                child: Icon(
+                  Icons.public_sharp,
+                  color: currentTheme.value ? Colors.black : Colors.white,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -48,28 +76,41 @@ class _UsersState extends State<Users> {
       stream: _userServices.getUsers(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Text("Error");
+          return const Text("Something went wrong...");
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text("...");
+          return Text("...");
         }
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) => _scrollController.jumpTo(
-            _scrollController.position.maxScrollExtent,
-          ),
-        );
+
         return ListView(
           controller: _scrollController,
-          children: snapshot.data!.docs
-              .map((doc) => _buildUserItem(doc))
-              .toList(),
+          children: snapshot.data!.docs.map((doc) {
+            return _buildChatItem(doc);
+          }).toList(),
         );
       },
     );
   }
 
-  Widget _buildUserItem(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  Widget _buildChatItem(DocumentSnapshot doc) {
+    final rawData = doc.data();
+    if (rawData == null) {
+      return const SizedBox.shrink(); // Skip this item silently
+    }
+
+    Map<String, dynamic> data = rawData as Map<String, dynamic>;
+
+    List participants = data["participants"] ?? [];
+    Map usernames = data["usernames"] ?? {};
+
+    // Defensive fallback if something's missing
+    if (participants.isEmpty || !usernames.containsKey(userID.value)) {
+      return const SizedBox.shrink();
+    }
+
+    String otherUid = participants.firstWhere((uid) => uid != userID.value);
+    String otherUsername = usernames[otherUid] ?? "Unknown";
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -79,27 +120,41 @@ class _UsersState extends State<Users> {
             ? Colors.grey[300]
             : const Color.fromARGB(255, 35, 36, 35),
       ),
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
       child: ListTile(
-        title: Text(
-          data["username"] == currentUser.value
-              ? "GLOBAL CHAT"
-              : data['username'],
+        title: Text(otherUsername),
+        subtitle: Text(
+          data["lastMsg"] ?? "",
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: Text(
+          data["lastUpdated"] != null
+              ? _formatTimestamp(data["lastUpdated"])
+              : "",
+          style: const TextStyle(fontSize: 12),
         ),
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) {
-                return userChatPage(u1: data["uid"], u2: userID.value);
+                return userChatPage(
+                  u1: otherUid,
+                  u2: userID.value,
+                  senderUsername: currentUser.value,
+                  receiverUsername: otherUsername,
+                );
               },
             ),
           );
         },
-        onLongPress: () => print(isSearch.value),
       ),
     );
   }
 
- 
+  String _formatTimestamp(Timestamp timestamp) {
+    DateTime date = timestamp.toDate();
+    return "${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
+  }
 }
