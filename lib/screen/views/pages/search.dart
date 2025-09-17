@@ -70,7 +70,7 @@ class _searchPageState extends State<searchPage> {
                           var username = doc['username']
                               .toString()
                               .toLowerCase();
-                          return username.contains(name.toLowerCase());
+                          return (username.contains(name.toLowerCase()) && username.toLowerCase() != currentUser.value.toLowerCase());
                         }).toList();
 
                   return ListView.builder(
