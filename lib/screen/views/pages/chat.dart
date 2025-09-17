@@ -97,6 +97,13 @@ class _ChatPageState extends State<ChatPage> {
       valueListenable: currentTheme,
       builder: (context, value, child) {
         return Scaffold(
+          appBar: AppBar(
+           leading: Padding(
+             padding: const EdgeInsets.only(left: 15,top: 1,bottom: 1),
+             child: CircleAvatar(child: Icon(Icons.person),),
+           ),
+           title: Text(widget.receiverUsername),
+          ),
           body: SafeArea(
             child: Column(
               children: [
