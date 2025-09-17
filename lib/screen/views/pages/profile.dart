@@ -3,30 +3,42 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/screen/auth/authenticate.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 bool i = true;
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
-
+  
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  String version = "";
   @override
   void initState() {
     super.initState();
     _chechVersion();
   }
 
+  Uri url = Uri.parse("https://varundev.me");
+
   Future<void> _chechVersion() async {
-   if (i) {
-     final doc = await FirebaseFirestore.instance
-        .collection('ver')
-        .doc('currentVer')
-        .get();
-    newVer.value = doc["appVer"];
-    i = !i;
-   }
+    if (i) {
+      final doc = await FirebaseFirestore.instance
+          .collection('ver')
+          .doc('currentVer')
+          .get();
+      newVer.value = doc["appVer"];
+      Strversion.value = (await FirebaseFirestore.instance
+                                  .collection('ver')
+                                  .doc('currentVer')
+                                  .get()).get('version ') ;
+      i = !i;
+      setState(() {
+        print(Strversion.value);
+      });
+    }
   }
 
   @override
@@ -48,13 +60,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   right: 10,
                   child: GestureDetector(
                     onTap: () async {
-                      newVer.value =
-                          (await FirebaseFirestore.instance
-                                  .collection('ver')
-                                  .doc('currentVer')
-                                  .get())
-                              .get('appVer');
-                      showSnackBar(msg: "${newVer.value}");
+                      
+                      showSnackBar(msg: version);
                     },
                     onLongPress: () {
                       isProfanity.value = !isProfanity.value;
@@ -159,10 +166,31 @@ class _ProfilePageState extends State<ProfilePage> {
             borderRadius: BorderRadius.circular(8),
           ),
           child: GestureDetector(
-            onTap: () {},
+            onTap: () async {
+              if (!(currVer.value < newVer.value)) {
+                _chechVersion();
+                setState(() {
+                  
+                });
+              }
+              else{
+                url = Uri.parse((await FirebaseFirestore.instance
+                                  .collection('ver')
+                                  .doc('currentVer')
+                                  .get()).get('link'));
+                if (!await launchUrl(url)) {
+                showSnackBar(msg: "Couldn't Open link");
+              }
+              }
+              
+            },
             child: ListTile(
+              subtitle:currVer.value < newVer.value?Text("version ${Strversion.value}",style: TextStyle(color:currentTheme.value
+                      ? const Color.fromARGB(255, 0, 0, 0)
+                      : const Color.fromARGB(255, 0, 0, 0), ),):null ,
               title: Text(
-                "Check for Updates",
+                 currVer.value < newVer.value?
+                "Update availabe":"Check for Updates",
                 style: TextStyle(
                   color: currentTheme.value
                       ? const Color.fromARGB(255, 0, 0, 0)
