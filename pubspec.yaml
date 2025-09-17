@@ -38,6 +38,7 @@ dependencies:
   intl: ^0.18.1
   cupertino_icons: ^1.0.8
   keyboard_visibility_pro: ^1.0.0
+  url_launcher: ^6.3.2
 
 
 dev_dependencies:
