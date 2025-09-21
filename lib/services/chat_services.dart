@@ -19,9 +19,10 @@ class ChatServices {
 
     // Message object
     Messages newMessage = Messages(
-      SenderUname: username,
+      senderUname: username,
       message: message,
       time: time,
+      receiverUsername :receiverUsername,
     );
 
     final DocumentReference chatDocRef = _firestore
@@ -34,7 +35,7 @@ class ChatServices {
       "usernames" : {senderUid : senderUsername , receiverUid : receiverUsername},
       "lastMsg" : message,
       "lastUpdated": time,
-    }, SetOptions(merge: true)); // merge = don't overwrite existing fields
+    }, SetOptions(merge: true)); 
     await chatDocRef.collection("messages").add(newMessage.toMap());
   }
 

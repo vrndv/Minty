@@ -95,14 +95,35 @@ class _UsersState extends State<Users> {
   Widget _buildChatItem(DocumentSnapshot doc) {
     final rawData = doc.data();
     if (rawData == null) {
-      return const SizedBox.shrink(); // Skip this item silently
+      return Center(
+            child: GestureDetector(
+              onTap: () {
+              isSearch.value = true;
+              setState(() {});
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Find ", style: TextStyle(fontSize: 20)),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color.fromARGB(255, 37, 37, 37),
+                    ),
+                    child: Text("Users", style: TextStyle(fontSize: 17)),
+                  ),
+                ],
+              ),
+            ),
+          );
+         // Skip this item silently
     }
 
     Map<String, dynamic> data = rawData as Map<String, dynamic>;
 
     List participants = data["participants"] ?? [];
     Map usernames = data["usernames"] ?? {};
-
     // Defensive fallback if something's missing
     if (participants.isEmpty || !usernames.containsKey(userID.value) || usernames.containsKey("global")) {
       return const SizedBox.shrink();
