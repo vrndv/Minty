@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/screen/auth/authenticate.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+//bool func
 bool i = true;
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
