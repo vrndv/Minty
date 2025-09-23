@@ -81,6 +81,7 @@ class _UsersState extends State<Users> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Text("...");
         }
+        
 
         return ListView(
           controller: _scrollController,
@@ -95,31 +96,8 @@ class _UsersState extends State<Users> {
   Widget _buildChatItem(DocumentSnapshot doc) {
     final rawData = doc.data();
     if (rawData == null) {
-      return Center(
-            child: GestureDetector(
-              onTap: () {
-              isSearch.value = true;
-              setState(() {});
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Find ", style: TextStyle(fontSize: 20)),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color.fromARGB(255, 37, 37, 37),
-                    ),
-                    child: Text("Users", style: TextStyle(fontSize: 17)),
-                  ),
-                ],
-              ),
-            ),
-          );
-         // Skip this item silently
+      return const SizedBox.shrink();
     }
-
     Map<String, dynamic> data = rawData as Map<String, dynamic>;
 
     List participants = data["participants"] ?? [];

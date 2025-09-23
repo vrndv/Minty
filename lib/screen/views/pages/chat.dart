@@ -37,6 +37,7 @@ class _ChatPageState extends State<ChatPage> {
   ScrollController _scrollController = ScrollController();
   final TextEditingController msgcontroller = TextEditingController();
   //Send Message
+  bool i = true;
   Future<void> sendMessage(String msg) async {
     if (msgcontroller.text.isNotEmpty || msg.isNotEmpty) {
       if (widget.roomID == 'global' &&
@@ -47,9 +48,9 @@ class _ChatPageState extends State<ChatPage> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              backgroundColor: const Color.fromARGB(155, 121, 3, 3),
+              backgroundColor: const Color.fromARGB(99, 255, 0, 0),
               title: Text("Warning"),
-              content: Text("Usage of swear words might result in ban"),
+              content: Text("Usage of Offensive language might result in ban"),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -60,7 +61,9 @@ class _ChatPageState extends State<ChatPage> {
           },
         );
       }
+      i? isSearch.value = false:null; 
       await _chatServices.sendMessage(
+        
         message: msgcontroller.text.isEmpty ? msg : msgcontroller.text,
         roomID: widget.roomID,
         senderUid: userID.value,

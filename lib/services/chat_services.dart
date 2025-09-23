@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
+import 'package:popapp/database.dart';
 import 'package:popapp/models/message.dart';
 import 'package:popapp/screen/views/pages/chat.dart';
 
@@ -75,9 +76,11 @@ ChatPage userChatPage({
       receiverUsername: "global",
     );
   } else {
+    print("hi");
     final List<String> ids = [u1, u2];
     ids.sort();
     final roomID = ids.join("_");
+    DatabaseService().isPhone(username: receiverUsername, roomID: roomID);
     return ChatPage(
       roomID: roomID,
       senderUid: u2,

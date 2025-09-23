@@ -136,7 +136,8 @@ class _ProfilePageState extends State<ProfilePage> {
           child: GestureDetector(
             onTap: () {
               setState(() {
-                currentTheme.value = !currentTheme.value;
+                currentPageNotifier.value = 0;
+                
               });
             },
             child: ListTile(
