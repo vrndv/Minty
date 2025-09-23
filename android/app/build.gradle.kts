@@ -10,11 +10,11 @@ plugins {
 
 android {
     namespace = "com.varungg.popapp"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.varungg.popapp"
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
