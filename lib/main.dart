@@ -1,18 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/database.dart';
-import 'package:popapp/screen/auth/authenticate.dart';
-import 'package:popapp/screen/home/home.dart';
-import 'firebase_options.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 
 //Just to save point ,the username adding option is currently situated in homescreen
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:popapp/dataNotifiers/notifier.dart';
+import 'package:popapp/firebase_options.dart';
+import 'package:popapp/rootAuth.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);  
   runApp(const MainApp());
 }
 
@@ -22,61 +19,32 @@ class MainApp extends StatefulWidget {
   @override
   State<MainApp> createState() => _MainAppState();
 }
-
 class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: currentTheme,
-      builder: (context, bvalue, child) {
+      builder: (context, themeMode, child) {
         return MaterialApp(
-        title: 'PopApp',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor:const Color.fromARGB(255, 0, 132, 255), brightness: bvalue ? Brightness.light : Brightness.dark ,),
-         
-        ),
-        home: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            }
-            if (snapshot.hasData) {
-              // Use FutureBuilder to handle async username lookup
-              return FutureBuilder<String>(
-                future: DatabaseService().findUsername(
-                  email: snapshot.data!.email!,
-                ),
-                builder: (context, unameSnapshot) {
-                  if (unameSnapshot.connectionState == ConnectionState.waiting) {
-                    return const Scaffold(
-                      body: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  if (unameSnapshot.hasError) {
-                    return Auth();
-                  }
-                  if (unameSnapshot.hasData) {
-                    userID.value = FirebaseAuth.instance.currentUser!.uid; 
-                    currentUser.value = unameSnapshot.data!;
-                    return DataBaseForm(userEmail: unameSnapshot.data!, page: 0,);
-                  }
-                  return const Scaffold(
-                    body: Center(child: Text('No username found')),
-                  );
-                },
-              );
-            }
-            // User is not signed in
-            return const Auth();
-          },
-        ),
-      );
+          title: 'PopApp',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 0, 132, 255),
+              brightness: Brightness.light,
+            ),
+          ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 0, 132, 255),
+              brightness: Brightness.dark,
+            ),
+          ),
+          themeMode: themeMode? ThemeMode.light:ThemeMode.dark, // theme changes
+          home: child,
+        );
       },
-      
+      child: RootAppLogic(),
     );
   }
 }
