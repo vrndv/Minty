@@ -85,53 +85,33 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         //RESET PASSWORD
-        Container(
-          margin: EdgeInsets.only(top: 10, left: 15, right: 15),
-          decoration: BoxDecoration(
-            color: currentTheme.value
-                ? const Color.fromARGB(113, 163, 163, 163)
-                : const Color.fromARGB(151, 255, 255, 255),
-            borderRadius: BorderRadius.circular(8),
-          ),
+        ProfileButoon(
+          function: () async {
+            await FirebaseAuth.instance.sendPasswordResetEmail(
+              email: currentEmail.value,
+            );
+            showSnackBar(
+              msg:
+                  "Reset link sent to: ${currentEmail.value}\nChech Spam folders ",
+            );
+            await Future.delayed(Duration(seconds: 4));
+            FirebaseAuth.instance.signOut();
 
-          child: ListTile(
-            onTap: () async {
-              await FirebaseAuth.instance.sendPasswordResetEmail(
-                email: currentEmail.value,
-              );
-              showSnackBar(
-                msg:
-                    "Reset link sent to: ${currentEmail.value}\nChech Spam folders ",
-              );
-              await Future.delayed(Duration(seconds: 4));
-              FirebaseAuth.instance.signOut();
-
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const Auth()),
-                (Route<dynamic> route) => false,
-              );
-            },
-            title: Text(
-              "Reset Password",
-              style: TextStyle(
-                color: currentTheme.value
-                    ? const Color.fromARGB(255, 0, 0, 0)
-                    : const Color.fromARGB(255, 0, 0, 0),
-              ),
-            ),
-
-            trailing: Icon(
-              Icons.lock_reset,
-              size: 26,
-              color: const Color.fromARGB(204, 0, 0, 0),
-            ),
-          ),
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const Auth()),
+              (Route<dynamic> route) => false,
+            );
+          },
+          title: "Reset Password",
         ),
+
         //THEME BUTTON
-        
-        ProfileButoon(function: () {  
-          currentTheme.value = !currentTheme.value;
-        }, title: 'Theme',),
+        ProfileButoon(
+          function: () {
+            currentTheme.value = !currentTheme.value;
+          },
+          title: 'Theme',
+        ),
 
         //CHECK UPDATE
         Container(
