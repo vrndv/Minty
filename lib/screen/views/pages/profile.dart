@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/screen/auth/authenticate.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 //bool func
 bool i = true;
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
-  
+
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -30,10 +32,12 @@ class _ProfilePageState extends State<ProfilePage> {
           .doc('currentVer')
           .get();
       newVer.value = doc["appVer"];
-      Strversion.value = (await FirebaseFirestore.instance
-                                  .collection('ver')
-                                  .doc('currentVer')
-                                  .get()).get('version ') ;
+      Strversion.value =
+          (await FirebaseFirestore.instance
+                  .collection('ver')
+                  .doc('currentVer')
+                  .get())
+              .get('version ');
       i = !i;
       setState(() {
         print(Strversion.value);
@@ -60,7 +64,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   right: 10,
                   child: GestureDetector(
                     onTap: () async {
-                      
                       showSnackBar(msg: version);
                     },
                     onLongPress: () {
@@ -89,7 +92,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 : const Color.fromARGB(151, 255, 255, 255),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: GestureDetector(
+
+          child: ListTile(
             onTap: () async {
               await FirebaseAuth.instance.sendPasswordResetEmail(
                 email: currentEmail.value,
@@ -106,21 +110,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 (Route<dynamic> route) => false,
               );
             },
-            child: ListTile(
-              title: Text(
-                "Reset Password",
-                style: TextStyle(
-                  color: currentTheme.value
-                      ? const Color.fromARGB(255, 0, 0, 0)
-                      : const Color.fromARGB(255, 0, 0, 0),
-                ),
+            title: Text(
+              "Reset Password",
+              style: TextStyle(
+                color: currentTheme.value
+                    ? const Color.fromARGB(255, 0, 0, 0)
+                    : const Color.fromARGB(255, 0, 0, 0),
               ),
+            ),
 
-              trailing: Icon(
-                Icons.lock_reset,
-                size: 26,
-                color: const Color.fromARGB(204, 0, 0, 0),
-              ),
+            trailing: Icon(
+              Icons.lock_reset,
+              size: 26,
+              color: const Color.fromARGB(204, 0, 0, 0),
             ),
           ),
         ),
@@ -133,26 +135,24 @@ class _ProfilePageState extends State<ProfilePage> {
                 : const Color.fromARGB(151, 255, 255, 255),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: GestureDetector(
+
+          child: ListTile(
             onTap: () {
               setState(() {
-              currentTheme.value =!currentTheme.value;
-                
+                currentTheme.value = !currentTheme.value;
               });
             },
-            child: ListTile(
-              title: Text(
-                "Theme",
-                style: TextStyle(
-                  color: currentTheme.value
-                      ? const Color.fromARGB(255, 0, 0, 0)
-                      : const Color.fromARGB(255, 0, 0, 0),
-                ),
+            title: Text(
+              "Theme",
+              style: TextStyle(
+                color: currentTheme.value
+                    ? const Color.fromARGB(255, 0, 0, 0)
+                    : const Color.fromARGB(255, 0, 0, 0),
               ),
-              trailing: Icon(
-                Icons.dark_mode_rounded,
-                color: const Color.fromARGB(207, 0, 0, 0),
-              ),
+            ),
+            trailing: Icon(
+              Icons.dark_mode_rounded,
+              color: const Color.fromARGB(207, 0, 0, 0),
             ),
           ),
         ),
@@ -166,67 +166,74 @@ class _ProfilePageState extends State<ProfilePage> {
                 : const Color.fromARGB(151, 255, 255, 255),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: GestureDetector(
+
+          child: ListTile(
             onTap: () async {
               if (!(currVer.value < newVer.value)) {
                 _chechVersion();
-                setState(() {
-                  
-                });
-              }
-              else{
-                url = Uri.parse((await FirebaseFirestore.instance
-                                  .collection('ver')
-                                  .doc('currentVer')
-                                  .get()).get('link'));
+                setState(() {});
+              } else {
+                url = Uri.parse(
+                  (await FirebaseFirestore.instance
+                          .collection('ver')
+                          .doc('currentVer')
+                          .get())
+                      .get('link'),
+                );
                 if (!await launchUrl(url)) {
-                showSnackBar(msg: "Couldn't Open link");
+                  showSnackBar(msg: "Couldn't Open link");
+                }
               }
-              }
-              
             },
-            child: ListTile(
-              subtitle:currVer.value < newVer.value?Text("version ${Strversion.value}",style: TextStyle(color:currentTheme.value
-                      ? const Color.fromARGB(255, 0, 0, 0)
-                      : const Color.fromARGB(255, 0, 0, 0), ),):null ,
-              title: Text(
-                 currVer.value < newVer.value?
-                "Update availabe":"Check for Updates",
-                style: TextStyle(
-                  color: currentTheme.value
-                      ? const Color.fromARGB(255, 0, 0, 0)
-                      : const Color.fromARGB(255, 0, 0, 0),
-                ),
-              ),
-
-              trailing: SizedBox(
-                height: 25,
-                width: 25,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Icon(
-                      Icons.update_outlined,
-                      size: 26,
-                      color: const Color.fromARGB(204, 0, 0, 0),
+            subtitle: currVer.value < newVer.value
+                ? Text(
+                    "version ${Strversion.value}",
+                    style: TextStyle(
+                      color: currentTheme.value
+                          ? const Color.fromARGB(255, 0, 0, 0)
+                          : const Color.fromARGB(255, 0, 0, 0),
                     ),
+                  )
+                : null,
+            title: Text(
+              currVer.value < newVer.value
+                  ? "Update availabe"
+                  : "Check for Updates",
+              style: TextStyle(
+                color: currentTheme.value
+                    ? const Color.fromARGB(255, 0, 0, 0)
+                    : const Color.fromARGB(255, 0, 0, 0),
+              ),
+            ),
 
-                    (currVer.value < newVer.value)
-                        ? Align(
-                            alignment: Alignment.topRight,
-                            child: Icon(
-                              Icons.lens_rounded,
-                              color: Colors.red,
-                              size: 7,
-                            ),
-                          )
-                        : Text(""),
-                  ],
-                ),
+            trailing: SizedBox(
+              height: 25,
+              width: 25,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(
+                    Icons.update_outlined,
+                    size: 26,
+                    color: const Color.fromARGB(204, 0, 0, 0),
+                  ),
+
+                  (currVer.value < newVer.value)
+                      ? Align(
+                          alignment: Alignment.topRight,
+                          child: Icon(
+                            Icons.lens_rounded,
+                            color: Colors.red,
+                            size: 7,
+                          ),
+                        )
+                      : Text(""),
+                ],
               ),
             ),
           ),
         ),
+
         Expanded(child: Text("")),
         //LOGOUT
         Container(
@@ -237,7 +244,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 : const Color.fromARGB(255, 66, 33, 33),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: GestureDetector(
+
+          child: ListTile(
             onTap: () {
               FirebaseAuth.instance.signOut();
               Navigator.pushReplacement(
@@ -249,20 +257,18 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               );
             },
-            child: ListTile(
-              title: Text("Logout", style: TextStyle(color: Colors.red)),
-              subtitle: Text(
-                currentUser.value,
-                style: TextStyle(
-                  color: currentTheme.value
-                      ? const Color.fromARGB(255, 0, 0, 0)
-                      : const Color.fromARGB(255, 255, 156, 156),
-                ),
+            title: Text("Logout", style: TextStyle(color: Colors.red)),
+            subtitle: Text(
+              currentUser.value,
+              style: TextStyle(
+                color: currentTheme.value
+                    ? const Color.fromARGB(255, 0, 0, 0)
+                    : const Color.fromARGB(255, 255, 156, 156),
               ),
-              trailing: Icon(
-                Icons.logout_rounded,
-                color: const Color.fromARGB(199, 244, 67, 54),
-              ),
+            ),
+            trailing: Icon(
+              Icons.logout_rounded,
+              color: const Color.fromARGB(199, 244, 67, 54),
             ),
           ),
         ),
