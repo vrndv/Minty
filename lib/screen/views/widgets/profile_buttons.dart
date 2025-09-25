@@ -4,7 +4,9 @@ import 'package:popapp/dataNotifiers/notifier.dart';
 class ProfileButoon extends StatefulWidget {
   final String title;
   final Function() function;
-  const ProfileButoon({super.key , required Function() this.function  ,required String this.title});
+  final String subtitle;
+  final IconData icon;
+  const ProfileButoon({super.key , required this.function  ,required this.title,required this.icon ,  this.subtitle =""});
 
   @override
   State<ProfileButoon> createState() => _ProfileButoonState();
@@ -39,10 +41,8 @@ class _ProfileButoonState extends State<ProfileButoon> {
                         : const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
-                trailing: Icon(
-                  Icons.dark_mode_rounded,
-                  color: const Color.fromARGB(207, 0, 0, 0),
-                ),
+                
+                trailing: Icon(widget.icon),
               ),
             ),
           ),
