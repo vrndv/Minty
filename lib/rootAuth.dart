@@ -35,6 +35,7 @@ class RootAppLogic extends StatelessWidget {
               if (unameSnapshot.hasData) {
                 userID.value = FirebaseAuth.instance.currentUser!.uid;
                 currentUser.value = unameSnapshot.data!;
+                isLogged.value = true;
                 return DataBaseForm(userEmail: unameSnapshot.data!, page: 0);
               }
               return const Scaffold(
