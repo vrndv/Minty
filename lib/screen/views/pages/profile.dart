@@ -128,31 +128,40 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         //THEME BUTTON
         Container(
+
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
             color: currentTheme.value
                 ? const Color.fromARGB(113, 163, 163, 163)
                 : const Color.fromARGB(151, 255, 255, 255),
             borderRadius: BorderRadius.circular(8),
+
           ),
 
-          child: ListTile(
-            onTap: () {
-              setState(() {
-                currentTheme.value = !currentTheme.value;
-              });
-            },
-            title: Text(
-              "Theme",
-              style: TextStyle(
-                color: currentTheme.value
-                    ? const Color.fromARGB(255, 0, 0, 0)
-                    : const Color.fromARGB(255, 0, 0, 0),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+                onTap: () {
+                  setState(() {
+                    currentTheme.value = !currentTheme.value;
+                  });
+                },
+              child: ListTile(
+               
+                title: Text(
+                  "Theme",
+                  style: TextStyle(
+                    color: currentTheme.value
+                        ? const Color.fromARGB(255, 0, 0, 0)
+                        : const Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ),
+                trailing: Icon(
+                  Icons.dark_mode_rounded,
+                  color: const Color.fromARGB(207, 0, 0, 0),
+                ),
               ),
-            ),
-            trailing: Icon(
-              Icons.dark_mode_rounded,
-              color: const Color.fromARGB(207, 0, 0, 0),
             ),
           ),
         ),
