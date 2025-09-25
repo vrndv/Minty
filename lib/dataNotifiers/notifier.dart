@@ -11,3 +11,4 @@ ValueNotifier<bool> isProfanity=ValueNotifier(true);
 ValueNotifier<int> newVer = ValueNotifier(1);
 ValueNotifier<int> currVer = ValueNotifier(21);
 ValueNotifier<String> Strversion = ValueNotifier("null");
+ValueNotifier<bool> isLogged=ValueNotifier(false);
