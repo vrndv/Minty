@@ -87,12 +87,20 @@ class _ProfilePageState extends State<ProfilePage> {
         //RESET PASSWORD
         ProfileButoon(
           function: () async {
-            await FirebaseAuth.instance.sendPasswordResetEmail(
+            String text = "";
+            if(isLogged.value)
+            {
+              await FirebaseAuth.instance.sendPasswordResetEmail(
               email: currentEmail.value,
-            );
+             );
+             text =  "Reset link sent to: ${currentEmail.value}\nChech Spam folders ";
+            }
+            else{
+              text = "Something went wrong,try loggin in again";
+            }
+            
             showSnackBar(
-              msg:
-                  "Reset link sent to: ${currentEmail.value}\nChech Spam folders ",
+              msg:text,
             );
             await Future.delayed(Duration(seconds: 4));
             FirebaseAuth.instance.signOut();
@@ -102,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
               (Route<dynamic> route) => false,
             );
           },
-          title: "Reset Password",
+          title: "Reset Password", icon: Icons.lock_reset_outlined,
         ),
 
         //THEME BUTTON
@@ -110,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
           function: () {
             currentTheme.value = !currentTheme.value;
           },
-          title: 'Theme',
+          title: 'Theme', icon: Icons.brightness_medium_sharp,
         ),
 
         //CHECK UPDATE
