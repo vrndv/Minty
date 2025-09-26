@@ -32,11 +32,12 @@ class _UsersState extends State<Users> {
               isSearch.value = true;
               setState(() {});
             },
-
+  
             hintText: "Search",
             leading: Icon(Icons.search),
             onChanged: (value) => print(value),
           ),
+         
           Expanded(child: _buildUserList()),
           Align(
             alignment: Alignment.bottomRight,
@@ -114,12 +115,12 @@ class _UsersState extends State<Users> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: currentTheme.value
-            ? Colors.blue[100]
+            ? const Color.fromARGB(120, 211, 211, 212)
             : currentTheme.value
             ? Colors.grey[300]
             : const Color.fromARGB(255, 35, 36, 35),
       ),
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       child: ListTile(
         title: Text(otherUsername),
         subtitle: Text(
