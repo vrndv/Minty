@@ -117,16 +117,15 @@ class _ProfilePageState extends State<ProfilePage> {
             });
           },
           title: 'Theme',
-          icon:Icons.brightness_medium_sharp,
+          icon: Icons.brightness_medium_sharp,
         ),
 
         //CHECK UPDATE
-
         Container(
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
             color: currentTheme.value
-                ?  const Color.fromARGB(52, 163, 163, 163)
+                ? const Color.fromARGB(52, 163, 163, 163)
                 : const Color.fromARGB(151, 255, 255, 255),
             borderRadius: BorderRadius.circular(8),
           ),
@@ -201,43 +200,8 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
 
         Expanded(child: Text("")),
-        //LOGOUT
-        Container(
-          margin: EdgeInsets.only(top: 10, left: 15, right: 15),
-          decoration: BoxDecoration(
-            color: currentTheme.value
-                ? const Color.fromARGB(255, 252, 223, 223)
-                : const Color.fromARGB(255, 66, 33, 33),
-            borderRadius: BorderRadius.circular(8),
-          ),
 
-          child: ListTile(
-            onTap: () {
-              FirebaseAuth.instance.signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return Auth();
-                  },
-                ),
-              );
-            },
-            title: Text("Logout", style: TextStyle(color: Colors.red)),
-            subtitle: Text(
-              currentUser.value,
-              style: TextStyle(
-                color: currentTheme.value
-                    ? const Color.fromARGB(255, 0, 0, 0)
-                    : const Color.fromARGB(255, 255, 156, 156),
-              ),
-            ),
-            trailing: Icon(
-              Icons.logout_rounded,
-              color: const Color.fromARGB(199, 244, 67, 54),
-            ),
-          ),
-        ),
+        //LOGOUT
       ],
     );
   }

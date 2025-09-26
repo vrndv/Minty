@@ -84,8 +84,14 @@ class _DataBaseFormState extends State<DataBaseForm> {
         }
       },
       child: Scaffold(
+        //sabari
         appBar: AppBar(
-          title: const Text('PopApp Home'),
+          title: ValueListenableBuilder(
+            valueListenable: currentPageNotifier,
+            builder: (context, value, child) {
+              return value != 1 ? Text('Pop Home') : Text('Profile');
+            },
+          ),
           elevation: 20,
           shadowColor: const Color.fromARGB(83, 0, 0, 0),
           actions: [
@@ -104,11 +110,46 @@ class _DataBaseFormState extends State<DataBaseForm> {
                                 : Colors.white70,
                           ),
                         )
-                      : GestureDetector(onTap: () {
-                        //ADD POP UP WARNING HERE => sabarikasi
-                      },
-                      child:Icon(Icons.logout_outlined),
-                      );
+                      : GestureDetector(
+                          onTap: () {
+                            //ADD POP UP WARNING HERE => sabarikasi
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Confirm Logout'),
+                                  content: const Text(
+                                    'Do you really want to leave us',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        //closes the dialgoues
+                                      },
+                                      child: const Text('No'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        //closes the dialgoues
+                                        FirebaseAuth.instance.signOut();
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Auth(),
+                                          ),
+                                        );
+                                      },
+                                      child: const Text('Yes'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Icon(Icons.logout_outlined),
+                        );
                 },
               ),
             ),
