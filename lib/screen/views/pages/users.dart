@@ -25,50 +25,54 @@ class _UsersState extends State<Users> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SearchBar(
-            onTap: () {
-              isSearch.value = true;
-              setState(() {});
-            },
-  
-            hintText: "Search",
-            leading: Icon(Icons.search),
-            onChanged: (value) => print(value),
-          ),
-         
-          Expanded(child: _buildUserList()),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10, right: 10),
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return userChatPage(
-                          u1: "global",
-                          u2: "global",
-                          senderUsername: currentUser.value,
-                          receiverUsername: "global",
-                        );
-                      },
-                    ),
-                  );
-                },
-                backgroundColor:Theme.of(context).colorScheme.outlineVariant,
-                child: Icon(
-                  Icons.public_sharp,
-                  color: currentTheme.value ? Colors.black : Colors.white,
-                ),
+      body: Stack(
+        children: [ Column(
+          children: [
+            SearchBar(
+              onTap: () {
+                isSearch.value = true;
+                setState(() {});
+              },
+          
+              hintText: "Search",
+              leading: Icon(Icons.search),
+              onChanged: (value) => print(value),
+            ),
+           
+            Expanded(child: _buildUserList()),
+            
+          ],
+        ),
+        Positioned(
+          bottom: 12,
+          right: 25,
+          child: FloatingActionButton(
+              
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return userChatPage(
+                        u1: "global",
+                        u2: "global",
+                        senderUsername: currentUser.value,
+                        receiverUsername: "global",
+                      );
+                    },
+                  ),
+                );
+              },
+              backgroundColor:Theme.of(context).colorScheme.outlineVariant,
+              child: Icon(
+                Icons.public_sharp,
+                color: currentTheme.value ? Colors.black : Colors.white,
               ),
             ),
-          ),
-        ],
+        ),
+        ]
       ),
+      
     );
   }
 
