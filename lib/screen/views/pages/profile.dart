@@ -88,45 +88,45 @@ class _ProfilePageState extends State<ProfilePage> {
         ProfileButoon(
           function: () async {
             String text = "";
-            if(isLogged.value)
-            {
+            if (isLogged.value) {
               await FirebaseAuth.instance.sendPasswordResetEmail(
-              email: currentEmail.value,
-             );
-             text =  "Reset link sent to: ${currentEmail.value}\nChech Spam folders ";
-            }
-            else{
-              text = "Something went wrong,try loggin in again";
-            }
-            
-            showSnackBar(
-              msg:text,
-            );
-            await Future.delayed(Duration(seconds: 4));
-            FirebaseAuth.instance.signOut();
+                email: currentEmail.value,
+              );
+              text =
+                  "Reset link sent to: ${currentEmail.value}\nChech Spam folders ";
+              isLogged.value = false;
+              showSnackBar(msg: text);
+              await Future.delayed(Duration(seconds: 4));
+              FirebaseAuth.instance.signOut();
 
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const Auth()),
-              (Route<dynamic> route) => false,
-            );
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const Auth()),
+                (Route<dynamic> route) => false,
+              );
+            }
           },
-          title: "Reset Password", icon: Icons.lock_reset_outlined,
+          title: "Reset Password",
+          icon: Icons.lock_reset_outlined,
         ),
 
         //THEME BUTTON
         ProfileButoon(
           function: () {
-            currentTheme.value = !currentTheme.value;
+            setState(() {
+              currentTheme.value = !currentTheme.value;
+            });
           },
-          title: 'Theme', icon: Icons.brightness_medium_sharp,
+          title: 'Theme',
+          icon:Icons.brightness_medium_sharp,
         ),
 
         //CHECK UPDATE
+
         Container(
           margin: EdgeInsets.only(top: 10, left: 15, right: 15),
           decoration: BoxDecoration(
             color: currentTheme.value
-                ? const Color.fromARGB(113, 163, 163, 163)
+                ?  const Color.fromARGB(52, 163, 163, 163)
                 : const Color.fromARGB(151, 255, 255, 255),
             borderRadius: BorderRadius.circular(8),
           ),
@@ -135,7 +135,9 @@ class _ProfilePageState extends State<ProfilePage> {
             onTap: () async {
               if (!(currVer.value < newVer.value)) {
                 _chechVersion();
-                setState(() {});
+                setState(() {
+                  showSnackBar(msg: "${newVer.value}");
+                });
               } else {
                 url = Uri.parse(
                   (await FirebaseFirestore.instance
