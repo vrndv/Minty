@@ -125,34 +125,44 @@ class _UsersState extends State<Users> {
             : const Color.fromARGB(255, 35, 36, 35),
       ),
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: ListTile(
-        title: Text(otherUsername),
-        subtitle: Text(
-          data["lastMsg"] ?? "",
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        trailing: Text(
-          data["lastUpdated"] != null
-              ? _formatTimestamp(data["lastUpdated"])
-              : "",
-          style: const TextStyle(fontSize: 12),
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return userChatPage(
-                  u1: otherUid,
-                  u2: userID.value,
-                  senderUsername: currentUser.value,
-                  receiverUsername: otherUsername,
-                );
-              },
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: () {
+            Future.delayed(Duration(milliseconds: 200),() {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return userChatPage(
+                      u1: otherUid,
+                      u2: userID.value,
+                      senderUsername: currentUser.value,
+                      receiverUsername: otherUsername,
+                    );
+                  },
+                ),
+              );
+            },);
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: ListTile(
+            title: Text(otherUsername),
+            subtitle: Text(
+              data["lastMsg"] ?? "",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-          );
-        },
+            trailing: Text(
+              data["lastUpdated"] != null
+                  ? _formatTimestamp(data["lastUpdated"])
+                  : "",
+              style: const TextStyle(fontSize: 12),
+            ),
+            
+          ),
+        ),
       ),
     );
   }
