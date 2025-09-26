@@ -10,7 +10,7 @@ import 'package:popapp/dataNotifiers/notifier.dart';
 class DataBaseForm extends StatefulWidget {
   final String userEmail;
   final int page;
-  const DataBaseForm({super.key, required this.userEmail , required this.page});
+  const DataBaseForm({super.key, required this.userEmail, required this.page});
 
   @override
   State<DataBaseForm> createState() => _DataBaseFormState();
@@ -19,32 +19,29 @@ class DataBaseForm extends StatefulWidget {
 class _DataBaseFormState extends State<DataBaseForm> {
   DateTime? _lastBackPressTime;
   bool _canPop = false;
-    Future<void> _handlePop() async {
+  Future<void> _handlePop() async {
     final now = DateTime.now();
     if (_lastBackPressTime == null ||
         now.difference(_lastBackPressTime!) > Duration(seconds: 2)) {
       _lastBackPressTime = now;
-      if(isSearch.value){
+      if (isSearch.value) {
         isSearch.value = false;
-         _canPop = false;
+        _canPop = false;
+      } else {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Press back again to exit'),
+            duration: Duration(seconds: 2),
+          ),
+        );
       }
-      else{
-       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Press back again to exit'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-      }
-      
     } else {
       setState(() {
         _canPop = true;
       });
       Navigator.of(context).pop();
       SystemNavigator.pop(); // Closes the app (Android only)
-
     }
   }
 
@@ -73,14 +70,14 @@ class _DataBaseFormState extends State<DataBaseForm> {
 
   @override
   void dispose() {
-    currentPageNotifier.value= 0;
+    currentPageNotifier.value = 0;
     print("bye world");
     super.dispose();
   }
 
   Widget build(BuildContext context) {
     return PopScope(
-     canPop: _canPop,
+      canPop: _canPop,
       onPopInvokedWithResult: (didPop, result) async {
         if (!didPop) {
           await _handlePop();
@@ -94,17 +91,25 @@ class _DataBaseFormState extends State<DataBaseForm> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 10.0),
-              child: GestureDetector(
-                onDoubleTap: () {
-                  print(widget.userEmail);
+              child: ValueListenableBuilder(
+                valueListenable: currentPageNotifier,
+                builder: (context, value, child) {
+                  return value != 1
+                      ? Text(
+                          widget.userEmail,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: currentTheme.value
+                                ? Colors.black
+                                : Colors.white70,
+                          ),
+                        )
+                      : GestureDetector(onTap: () {
+                        //ADD POP UP WARNING HERE => sabarikasi
+                      },
+                      child:Icon(Icons.logout_outlined),
+                      );
                 },
-                child: Text(
-                  widget.userEmail,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: currentTheme.value ? Colors.black : Colors.white70,
-                  ),
-                ),
               ),
             ),
           ],
@@ -112,10 +117,10 @@ class _DataBaseFormState extends State<DataBaseForm> {
         body: ValueListenableBuilder(
           valueListenable: isSearch,
           builder: (BuildContext context, dynamic value, Widget? child) {
-            return isSearch.value? searchPage():  WidgetTree();
+            return isSearch.value ? searchPage() : WidgetTree();
           },
         ),
-      
+
         bottomNavigationBar: Navbar(),
       ),
     );
