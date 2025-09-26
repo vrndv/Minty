@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/screen/auth/authenticate.dart';
+import 'package:popapp/screen/views/widgets/avatar.dart';
 import 'package:popapp/screen/views/widgets/profile_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -56,10 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.only(top: 40.0, bottom: 40),
             child: Stack(
               children: [
-                CircleAvatar(
-                  radius: 100,
-                  child: Icon(Icons.person_outline_rounded, size: 100),
-                ),
+                Avatar(seed: currentUser.value, r: 100.0,),
                 Positioned(
                   bottom: 10,
                   right: 10,
