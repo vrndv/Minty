@@ -11,7 +11,9 @@ class Avatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: r,
-      backgroundImage: NetworkImage("https://api.dicebear.com/9.x/thumbs/png?seed=$seed"),
+      backgroundImage: NetworkImage("https://api.dicebear.com/9.x/adventurer/png?seed=$seed&scale=100"),
+      backgroundColor: const Color.fromARGB(20, 131, 130, 130),
     );
   }
 }
+//adventurer-neutral , adventurer , 

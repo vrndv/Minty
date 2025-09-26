@@ -3,6 +3,7 @@ import 'package:keyboard_visibility_pro/keyboard_visibility_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
+import 'package:popapp/screen/views/widgets/avatar.dart';
 import 'package:popapp/services/chat_services.dart';
 import 'package:intl/intl.dart';
 import 'package:popapp/services/profanity.dart';
@@ -103,7 +104,7 @@ class _ChatPageState extends State<ChatPage> {
           appBar: AppBar(
            leading: Padding(
              padding: const EdgeInsets.only(left: 15,top: 1,bottom: 1),
-             child: CircleAvatar(child: Icon(Icons.person),),
+             child: Avatar(seed: widget.receiverUsername, r: 20),
            ),
            title: Text(widget.receiverUsername),
           ),

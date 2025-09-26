@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
+import 'package:popapp/screen/views/widgets/avatar.dart';
 import 'package:popapp/services/chat_services.dart';
 
 class Users extends StatefulWidget {
@@ -148,6 +149,7 @@ class _UsersState extends State<Users> {
           },
           borderRadius: BorderRadius.circular(20),
           child: ListTile(
+            leading: Avatar(seed: otherUsername, r: 25),
             title: Text(otherUsername),
             subtitle: Text(
               data["lastMsg"] ?? "",
