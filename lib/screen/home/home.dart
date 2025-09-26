@@ -6,6 +6,7 @@ import 'package:popapp/screen/home/navbar.dart';
 import 'package:popapp/screen/views/pages/search.dart';
 import 'package:popapp/screen/views/tree.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
+import 'package:popapp/screen/views/widgets/avatar.dart';
 
 class DataBaseForm extends StatefulWidget {
   final String userEmail;
@@ -101,15 +102,7 @@ class _DataBaseFormState extends State<DataBaseForm> {
                 valueListenable: currentPageNotifier,
                 builder: (context, value, child) {
                   return value != 1
-                      ? Text(
-                          widget.userEmail,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: currentTheme.value
-                                ? Colors.black
-                                : Colors.white70,
-                          ),
-                        )
+                      ?  Avatar(seed: currentUser.value, r: 20)
                       : GestureDetector(
                           onTap: () {
                             //ADD POP UP WARNING HERE => sabarikasi
