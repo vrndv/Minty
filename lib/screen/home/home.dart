@@ -148,7 +148,10 @@ class _DataBaseFormState extends State<DataBaseForm> {
                               },
                             );
                           },
-                          child: Icon(Icons.logout_outlined),
+                          child: SizedBox(
+                            width: 50,
+                            child: Icon(Icons.logout_outlined),
+                          ),
                         );
                 },
               ),
