@@ -92,6 +92,7 @@ class _UsersState extends State<Users> {
         return ListView(
           controller: _scrollController,
           children: snapshot.data!.docs.map((doc) {
+                chatLen.value = snapshot.data!.size;
             return _buildChatItem(doc);
           }).toList(),
         );
@@ -104,8 +105,9 @@ class _UsersState extends State<Users> {
     if (rawData == null) {
       return const SizedBox.shrink();
     }
-    Map<String, dynamic> data = rawData as Map<String, dynamic>;
 
+    Map<String, dynamic> data = rawData as Map<String, dynamic>;
+    
     List participants = data["participants"] ?? [];
     Map usernames = data["usernames"] ?? {};
     // Defensive fallback if something's missing

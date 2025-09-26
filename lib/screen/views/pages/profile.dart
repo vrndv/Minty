@@ -52,36 +52,71 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       children: [
         //AVATAR
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 40.0, bottom: 40),
-            child: Stack(
-              children: [
-                Avatar(seed: currentUser.value, r: 100.0,),
-                Positioned(
-                  bottom: 10,
-                  right: 10,
-                  child: GestureDetector(
-                    onTap: () async {
-                      showSnackBar(msg: version);
-                    },
-                    onLongPress: () {
-                      isProfanity.value = !isProfanity.value;
-                      setState(() {});
-                      showSnackBar(
-                        msg: " Profanity :${isProfanity.value ? "ON" : "OFF"}",
-                      );
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(Icons.edit, color: Colors.black),
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                height: 250,
+                color: const Color.fromARGB(26, 139, 139, 139),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 145,
+                      bottom: 20,
+                      child: Text(
+                        currentUser.value,
+                        style: TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 30,
+                        ),
+                      ),
                     ),
-                  ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Text(
+                          "${(chatLen.value).toInt()} chats",
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Avatar(seed: currentUser.value, r: 60.0),
+                    ),
+                    Positioned(
+                      bottom: 60,
+                      left: 210,
+                      child: GestureDetector(
+                        onTap: () async {
+                          showSnackBar(msg: version);
+                        },
+                        onLongPress: () {
+                          isProfanity.value = !isProfanity.value;
+                          setState(() {});
+                          showSnackBar(
+                            msg:
+                                " Profanity :${isProfanity.value ? "ON" : "OFF"}",
+                          );
+                        },
+                        child: CircleAvatar(
+                          radius: 15,
+                          backgroundColor: Colors.white,
+                          child: Icon(Icons.edit, color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
+        Expanded(child: Text("")),
         //RESET PASSWORD
         ProfileButoon(
           function: () async {
@@ -196,10 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ),
-
-        Expanded(child: Text("")),
-
-        //LOGOUT
+        SizedBox(height: 30),
       ],
     );
   }
