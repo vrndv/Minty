@@ -10,13 +10,13 @@ import 'package:popapp/services/profanity.dart';
 
 class ChatPage extends StatefulWidget {
   final String roomID;
-  
+
   final String senderUid;
-  
+
   final String receiverUsername;
-  
+
   final String senderUsername;
-  
+
   final String receiverUid;
 
   const ChatPage({
@@ -37,6 +37,8 @@ class _ChatPageState extends State<ChatPage> {
 
   ScrollController _scrollController = ScrollController();
   final TextEditingController msgcontroller = TextEditingController();
+  //new:typing state
+  ValueNotifier<bool> _isTyping = ValueNotifier(false);
   //Send Message
   bool i = true;
   Future<void> sendMessage(String msg) async {
@@ -62,15 +64,14 @@ class _ChatPageState extends State<ChatPage> {
           },
         );
       }
-      i? isSearch.value = false:null; 
+      i ? isSearch.value = false : null;
       await _chatServices.sendMessage(
-        
         message: msgcontroller.text.isEmpty ? msg : msgcontroller.text,
         roomID: widget.roomID,
         senderUid: userID.value,
-        receiverUid:  widget.receiverUid,
-        senderUsername:  currentUser.value,
-        receiverUsername:  widget.receiverUsername,
+        receiverUid: widget.receiverUid,
+        senderUsername: currentUser.value,
+        receiverUsername: widget.receiverUsername,
       );
       msgcontroller.clear();
       scrollDown();
@@ -78,8 +79,18 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    msgcontroller.addListener(() {
+      _isTyping.value = msgcontroller.text.trim().isNotEmpty;
+    });
+  }
+
+  @override
   void dispose() {
     _scrollController.dispose();
+    msgcontroller.dispose();
+    _isTyping.dispose();
     super.dispose();
   }
 
@@ -102,11 +113,11 @@ class _ChatPageState extends State<ChatPage> {
       builder: (context, value, child) {
         return Scaffold(
           appBar: AppBar(
-           leading: Padding(
-             padding: const EdgeInsets.only(left: 15,top: 1,bottom: 1),
-             child: Avatar(seed: widget.receiverUsername, r: 20),
-           ),
-           title: Text(widget.receiverUsername),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 15, top: 1, bottom: 1),
+              child: Avatar(seed: widget.receiverUsername, r: 20),
+            ),
+            title: Text(widget.receiverUsername),
           ),
           body: SafeArea(
             child: Column(
@@ -148,21 +159,27 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                         ),
 
-                        GestureDetector(
-                          onTap: () {
-                            sendMessage("");
+                        ValueListenableBuilder<bool>(
+                          valueListenable: _isTyping,
+                          builder: (context, isTyping, child) {
+                            return IconButton(
+                              onPressed: isTyping
+                                  ? () {
+                                      sendMessage("");
+                                    }
+                                  : null, // 👈 disable when empty
+                              icon: TweenAnimationBuilder<Color?>(
+                                tween: ColorTween(
+                                  begin: Colors.grey,
+                                  end: isTyping ? Colors.blue : Colors.grey,
+                                ),
+                                duration: const Duration(milliseconds: 250),
+                                builder: (context, color, child) {
+                                  return Icon(Icons.send, color: color);
+                                },
+                              ),
+                            );
                           },
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: currentTheme.value
-                                  ? Color.fromARGB(24, 0, 0, 0)
-                                  : Color.fromARGB(23, 109, 108, 108),
-                            ),
-                            child: Icon(Icons.send),
-                          ),
                         ),
                       ],
                     ),
