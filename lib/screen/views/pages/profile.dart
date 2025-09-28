@@ -57,13 +57,13 @@ class _ProfilePageState extends State<ProfilePage> {
             Expanded(
               child: Container(
                 height: 250,
-                color: const Color.fromARGB(26, 139, 139, 139),
+                color: Theme.of(context).scaffoldBackgroundColor,
                 child: Stack(
                   children: [
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.only(bottom: 17),
                         child: Text(
                           currentUser.value,
                           style: TextStyle(
@@ -75,14 +75,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          "${(chatLen.value).toInt()} chats",
-                          style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 15,
-                          ),
+                      child: Text(
+                        "${(chatLen.value).toInt()} chats",
+                        style: TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
                         ),
                       ),
                     ),
