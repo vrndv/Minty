@@ -1,3 +1,5 @@
+import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/database.dart';
@@ -51,7 +53,32 @@ class ChatServices {
         .orderBy("time", descending: false)
         .snapshots();
   }
+
+
+deleteChat({required String roomID})async{
+  try {
+    final doc = await FirebaseFirestore.instance
+          .collection('ver')
+          .doc('currentVer')
+          .get();
+    final String link = doc["api"];
+    final url = Uri.parse("$link/:$roomID");
+    final resp = await http.post(url);
+  } catch (e) {
+    null;
+  }finally{
+   final ref = _firestore.collection("chats").doc(roomID);
+   final snapshot = await ref.collection("messages").get();
+   final batch = _firestore.batch();
+   for (var doc in snapshot.docs) {
+     batch.delete(doc.reference);
+   }
+  batch.delete(ref);
+  await batch.commit();
+_firestore.clearPersistence();
+}}
 }
+
 
 class UserServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

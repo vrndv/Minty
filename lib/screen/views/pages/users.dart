@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
 import 'package:popapp/screen/views/widgets/avatar.dart';
 import 'package:popapp/services/chat_services.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Users extends StatefulWidget {
   const Users({super.key});
@@ -52,7 +53,7 @@ class _UsersState extends State<Users> {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    transitionDuration: const Duration(milliseconds: 100),
+                    transitionDuration: const Duration(milliseconds: 200),
                     pageBuilder: (context, animation, secondaryAnimation) {
                       return userChatPage(
                         u1: "global",
@@ -63,8 +64,17 @@ class _UsersState extends State<Users> {
                     },
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
+                          final curved = CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.easeInCubic,
+                            reverseCurve: Curves.easeOutCubic,
+                          );
+
                           return ScaleTransition(
-                            scale: animation,
+                            scale: Tween<double>(
+                              begin: 0.0,
+                              end: 1.0,
+                            ).animate(curved),
                             child: child,
                           );
 
@@ -138,41 +148,87 @@ class _UsersState extends State<Users> {
             : const Color.fromARGB(255, 35, 36, 35),
       ),
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
-        child: InkWell(
-          onTap: () {
-            Future.delayed(Duration(milliseconds: 200), () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return userChatPage(
-                      u1: otherUid,
-                      u2: userID.value,
-                      senderUsername: currentUser.value,
-                      receiverUsername: otherUsername,
-                    );
-                  },
-                ),
-              );
-            });
-          },
-          borderRadius: BorderRadius.circular(20),
-          child: ListTile(
-            leading: Avatar(seed: otherUsername, r: 25),
-            title: Text(otherUsername),
-            subtitle: Text(
-              data["lastMsg"] ?? "",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+      child: Slidable(
+        key: ValueKey(doc.id),
+        endActionPane: ActionPane(
+          dismissible: DismissiblePane(
+            confirmDismiss: () async {
+              return await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text("Are you sure?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                            Slidable.of(context)?.close();
+                          },
+                          child: Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                            ChatServices().deleteChat(roomID: doc.id);
+                          },
+                          child: Text("Confirm"),
+                        ),
+                      ],
+                    ),
+                  ) ??
+                  false;
+            },
+
+            onDismissed: () {},
+            dismissThreshold: 0.1,
+          ),
+          motion: BehindMotion(),
+          children: [
+            SlidableAction(
+              icon: Icons.delete,
+              backgroundColor: Colors.red,
+              onPressed: (context) {
+                print(doc.id);
+              },
+              label: "Delete",
             ),
-            trailing: Text(
-              data["lastUpdated"] != null
-                  ? _formatTimestamp(data["lastUpdated"])
-                  : "",
-              style: const TextStyle(fontSize: 12),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          child: InkWell(
+            onTap: () {
+              Future.delayed(Duration(milliseconds: 200), () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return userChatPage(
+                        u1: otherUid,
+                        u2: userID.value,
+                        senderUsername: currentUser.value,
+                        receiverUsername: otherUsername,
+                      );
+                    },
+                  ),
+                );
+              });
+            },
+            borderRadius: BorderRadius.circular(20),
+            child: ListTile(
+              leading: Avatar(seed: otherUsername, r: 25),
+              title: Text(otherUsername),
+              subtitle: Text(
+                data["lastMsg"] ?? "",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Text(
+                data["lastUpdated"] != null
+                    ? _formatTimestamp(data["lastUpdated"])
+                    : "",
+                style: const TextStyle(fontSize: 12),
+              ),
             ),
           ),
         ),
