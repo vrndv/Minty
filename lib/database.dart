@@ -84,6 +84,17 @@ class DatabaseService {
     }
   }
 
+  Future<bool> checkPhoneUser({required String username}) async {
+    final snapshot = await db
+              .collection("numphone")
+              .where("username", isEqualTo: username)
+              .limit(1)
+              .get();
+          if (snapshot.docs.isNotEmpty) {
+            return true;
+          }return false;
+  }
+
   Future<String> findUsername({required String email}) async {
     var check = await db
         .collection("user")

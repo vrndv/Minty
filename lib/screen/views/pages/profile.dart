@@ -60,14 +60,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 color: const Color.fromARGB(26, 139, 139, 139),
                 child: Stack(
                   children: [
-                    Positioned(
-                      left: 145,
-                      bottom: 20,
-                      child: Text(
-                        currentUser.value,
-                        style: TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: 30,
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          currentUser.value,
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 30,
+                          ),
                         ),
                       ),
                     ),

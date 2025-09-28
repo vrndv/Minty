@@ -3,6 +3,7 @@ import 'package:keyboard_visibility_pro/keyboard_visibility_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:popapp/dataNotifiers/notifier.dart';
+import 'package:popapp/database.dart';
 import 'package:popapp/screen/views/widgets/avatar.dart';
 import 'package:popapp/services/chat_services.dart';
 import 'package:intl/intl.dart';
@@ -10,13 +11,9 @@ import 'package:popapp/services/profanity.dart';
 
 class ChatPage extends StatefulWidget {
   final String roomID;
-
   final String senderUid;
-
   final String receiverUsername;
-
   final String senderUsername;
-
   final String receiverUid;
 
   const ChatPage({
@@ -72,6 +69,7 @@ class _ChatPageState extends State<ChatPage> {
         receiverUid: widget.receiverUid,
         senderUsername: currentUser.value,
         receiverUsername: widget.receiverUsername,
+        isPhone : isPhone,
       );
       msgcontroller.clear();
       scrollDown();
@@ -81,6 +79,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    phone();
     msgcontroller.addListener(() {
       _isTyping.value = msgcontroller.text.trim().isNotEmpty;
     });
@@ -92,6 +91,11 @@ class _ChatPageState extends State<ChatPage> {
     msgcontroller.dispose();
     _isTyping.dispose();
     super.dispose();
+  }
+  bool isPhone = true;
+
+  void phone() async {
+     isPhone = await DatabaseService().checkPhoneUser(username: widget.receiverUsername);
   }
 
   void scrollDown({int time = 300}) {
