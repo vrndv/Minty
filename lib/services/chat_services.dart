@@ -14,6 +14,7 @@ class ChatServices {
     required String receiverUid,
     required String senderUsername,
     required String receiverUsername,
+    required bool isPhone,
   }) async {
     final String username = currentUser.value; // sender username
     final Timestamp time = Timestamp.now();
@@ -24,6 +25,7 @@ class ChatServices {
       message: message,
       time: time,
       receiverUsername :receiverUsername,
+      isPhone:isPhone,
     );
 
     final DocumentReference chatDocRef = _firestore
@@ -34,6 +36,7 @@ class ChatServices {
     await chatDocRef.set({
       "participants": [senderUid, receiverUid],
       "usernames" : {senderUid : senderUsername , receiverUid : receiverUsername},
+      "reciever":receiverUsername,
       "lastMsg" : message,
       "lastUpdated": time,
     }, SetOptions(merge: true)); 
@@ -76,7 +79,6 @@ ChatPage userChatPage({
       receiverUsername: "global",
     );
   } else {
-    print("hi");
     final List<String> ids = [u1, u2];
     ids.sort();
     final roomID = ids.join("_");
