@@ -122,8 +122,10 @@ class _LoginState extends State<Login> {
                   child: TextField(
                     controller: emailController,
                     decoration: InputDecoration(
+                      labelText: "Email",
+                      labelStyle: TextStyle(color:Colors.grey ),
                       hint: Text(
-                        "Email ",
+                        "myself@abc.com ",
                         style: TextStyle(
                           color: currentTheme.value
                               ? Colors.black26
@@ -161,8 +163,10 @@ class _LoginState extends State<Login> {
 
                     obscureText: true,
                     decoration: InputDecoration(
+                      labelText: "Password",
+                      labelStyle: TextStyle(color:Colors.grey ),
                       hint: Text(
-                        "Password ",
+                        "%abc@123# ",
                         style: TextStyle(
                           color: currentTheme.value
                               ? Colors.black26
