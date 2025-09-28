@@ -27,33 +27,33 @@ class _UsersState extends State<Users> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: [ Column(
-          children: [
-            SearchBar(
-              onTap: () {
-                isSearch.value = true;
-                setState(() {});
-              },
-          
-              hintText: "Search",
-              leading: Icon(Icons.search),
-              onChanged: (value) => print(value),
-            ),
-           
-            Expanded(child: _buildUserList()),
-            
-          ],
-        ),
-        Positioned(
-          bottom: 12,
-          right: 25,
-          child: FloatingActionButton(
-              
+        children: [
+          Column(
+            children: [
+              SearchBar(
+                onTap: () {
+                  isSearch.value = true;
+                  setState(() {});
+                },
+
+                hintText: "Search",
+                leading: Icon(Icons.search),
+                onChanged: (value) => print(value),
+              ),
+
+              Expanded(child: _buildUserList()),
+            ],
+          ),
+          Positioned(
+            bottom: 12,
+            right: 25,
+            child: FloatingActionButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) {
+                  PageRouteBuilder(
+                    transitionDuration: const Duration(milliseconds: 100),
+                    pageBuilder: (context, animation, secondaryAnimation) {
                       return userChatPage(
                         u1: "global",
                         u2: "global",
@@ -61,19 +61,28 @@ class _UsersState extends State<Users> {
                         receiverUsername: "global",
                       );
                     },
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          return ScaleTransition(
+                            scale: animation,
+                            child: child,
+                          );
+
+                          // For fade transition, comment above and use:
+                          // return FadeTransition(opacity: animation, child: child);
+                        },
                   ),
                 );
               },
-              backgroundColor:Theme.of(context).colorScheme.outlineVariant,
+              backgroundColor: Theme.of(context).colorScheme.outlineVariant,
               child: Icon(
                 Icons.public_sharp,
                 color: currentTheme.value ? Colors.black : Colors.white,
               ),
             ),
-        ),
-        ]
+          ),
+        ],
       ),
-      
     );
   }
 
@@ -87,12 +96,11 @@ class _UsersState extends State<Users> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Text("...");
         }
-        
 
         return ListView(
           controller: _scrollController,
           children: snapshot.data!.docs.map((doc) {
-                chatLen.value = snapshot.data!.size;
+            chatLen.value = snapshot.data!.size;
             return _buildChatItem(doc);
           }).toList(),
         );
@@ -107,11 +115,13 @@ class _UsersState extends State<Users> {
     }
 
     Map<String, dynamic> data = rawData as Map<String, dynamic>;
-    
+
     List participants = data["participants"] ?? [];
     Map usernames = data["usernames"] ?? {};
     // Defensive fallback if something's missing
-    if (participants.isEmpty || !usernames.containsKey(userID.value) || usernames.containsKey("global")) {
+    if (participants.isEmpty ||
+        !usernames.containsKey(userID.value) ||
+        usernames.containsKey("global")) {
       return const SizedBox.shrink();
     }
 
@@ -133,7 +143,7 @@ class _UsersState extends State<Users> {
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           onTap: () {
-            Future.delayed(Duration(milliseconds: 200),() {
+            Future.delayed(Duration(milliseconds: 200), () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -147,7 +157,7 @@ class _UsersState extends State<Users> {
                   },
                 ),
               );
-            },);
+            });
           },
           borderRadius: BorderRadius.circular(20),
           child: ListTile(
@@ -164,7 +174,6 @@ class _UsersState extends State<Users> {
                   : "",
               style: const TextStyle(fontSize: 12),
             ),
-            
           ),
         ),
       ),
