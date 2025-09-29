@@ -1,3 +1,4 @@
+import 'package:SHADE/screen/views/widgets/picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       left: 210,
                       child: GestureDetector(
                         onTap: () async {
-                          showSnackBar(msg: version);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AvatarPicker();
+                          },));
                         },
                         onLongPress: () {
                           isProfanity.value = !isProfanity.value;
