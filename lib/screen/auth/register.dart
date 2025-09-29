@@ -120,8 +120,10 @@ class _RegisterState extends State<Register> {
                 child: TextField(
                   controller: emailController,
                   decoration: InputDecoration(
+                  labelText: "Email",
+                  labelStyle: TextStyle(color:Colors.grey ),
                    hint: Text(
-                        "Email ",
+                        "",
                         style: TextStyle(
                           color: currentTheme.value
                               ? Colors.black26
@@ -160,8 +162,10 @@ class _RegisterState extends State<Register> {
                   controller: pwController,
                   obscureText: true,
                   decoration: InputDecoration(
+                  labelText: "Password",
+                  labelStyle: TextStyle(color:Colors.grey ),
                     hint: Text(
-                        "Password ",
+                        "",
                         style: TextStyle(
                           color: currentTheme.value
                               ? Colors.black26
@@ -202,8 +206,10 @@ class _RegisterState extends State<Register> {
                   controller: cpwController,
                   obscureText: true,
                   decoration: InputDecoration(
+                  labelText: "Confirm Password",
+                  labelStyle: TextStyle(color:Colors.grey ),
                     hint: Text(
-                        "Confirm Password ",
+                        "",
                         style: TextStyle(
                           color: currentTheme.value
                               ? Colors.black26
