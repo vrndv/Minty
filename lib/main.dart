@@ -20,7 +20,7 @@ class MainApp extends StatefulWidget {
   State<MainApp> createState() => _MainAppState();
 }
 class _MainAppState extends State<MainApp> {
-  @override
+    @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: currentTheme,
