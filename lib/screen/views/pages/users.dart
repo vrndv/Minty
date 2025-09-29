@@ -231,7 +231,11 @@ class _UsersState extends State<Users> {
             leading: Avatar(seed: otherUsername, r: 25),
             title: Text(otherUsername),
             subtitle: Text(
-              data["lastMsg"] ?? "",
+              data["lastMsg"] != null
+              ? data["reciever"] == currentUser.value
+                ?"${data["lastMsg"]}"
+                : "You:${data["lastMsg"]}"
+              :"",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
