@@ -39,11 +39,13 @@ class _ChatPageState extends State<ChatPage> {
   //Send Message
   bool i = true;
   Future<void> sendMessage(String msg) async {
-    if (msgcontroller.text.isNotEmpty || msg.isNotEmpty) {
+    var text = msgcontroller.text;
+    msgcontroller.clear();
+    if (text.isNotEmpty || msg.isNotEmpty) {
       if (widget.roomID == 'global' &&
-          ProfanityFilter.containsProfanity(msgcontroller.text) &&
+          ProfanityFilter.containsProfanity(text) &&
           isProfanity.value) {
-        msgcontroller.text = ProfanityFilter.censorText(msgcontroller.text);
+        text = ProfanityFilter.censorText(text);
         showDialog(
           context: context,
           builder: (context) {
@@ -63,7 +65,7 @@ class _ChatPageState extends State<ChatPage> {
       }
       i ? isSearch.value = false : null;
       await _chatServices.sendMessage(
-        message: msgcontroller.text.isEmpty ? msg : msgcontroller.text,
+        message: text.isEmpty ? msg : text,
         roomID: widget.roomID,
         senderUid: userID.value,
         receiverUid: widget.receiverUid,
@@ -71,7 +73,6 @@ class _ChatPageState extends State<ChatPage> {
         receiverUsername: widget.receiverUsername,
         isPhone : isPhone,
       );
-      msgcontroller.clear();
       scrollDown();
     }
   }
