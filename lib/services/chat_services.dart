@@ -55,7 +55,7 @@ class ChatServices {
   }
 
 
-deleteChat({required String roomID})async{
+Future<void> deleteChat({required String roomID})async{
   try {
     final doc = await FirebaseFirestore.instance
           .collection('ver')
@@ -77,6 +77,11 @@ deleteChat({required String roomID})async{
   await batch.commit();
 _firestore.clearPersistence();
 }}
+
+Future<void> restoreChat({required String roomID, required Map<String, dynamic> chatData}) async {
+  await FirebaseFirestore.instance.collection('chats').doc(roomID).set(chatData);
+}
+
 }
 
 
