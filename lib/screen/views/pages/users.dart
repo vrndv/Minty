@@ -118,123 +118,137 @@ class _UsersState extends State<Users> {
     );
   }
 
-  Widget _buildChatItem(DocumentSnapshot doc) {
-    final rawData = doc.data();
-    if (rawData == null) {
-      return const SizedBox.shrink();
-    }
+ Widget _buildChatItem(DocumentSnapshot doc) {
+  final rawData = doc.data();
+  if (rawData == null) return const SizedBox.shrink();
 
-    Map<String, dynamic> data = rawData as Map<String, dynamic>;
+  Map<String, dynamic> data = rawData as Map<String, dynamic>;
 
-    List participants = data["participants"] ?? [];
-    Map usernames = data["usernames"] ?? {};
-    // Defensive fallback if something's missing
-    if (participants.isEmpty ||
-        !usernames.containsKey(userID.value) ||
-        usernames.containsKey("global")) {
-      return const SizedBox.shrink();
-    }
+  List participants = data["participants"] ?? [];
+  Map usernames = data["usernames"] ?? {};
 
-    String otherUid = participants.firstWhere((uid) => uid != userID.value);
-    String otherUsername = usernames[otherUid] ?? "Unknown";
+  if (participants.isEmpty ||
+      !usernames.containsKey(userID.value) ||
+      usernames.containsKey("global")) {
+    return const SizedBox.shrink();
+  }
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: currentTheme.value
-            ? const Color.fromARGB(120, 211, 211, 212)
-            : currentTheme.value
-            ? Colors.grey[300]
-            : const Color.fromARGB(255, 35, 36, 35),
-      ),
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: Slidable(
-        key: ValueKey(doc.id),
-        endActionPane: ActionPane(
-          dismissible: DismissiblePane(
-            confirmDismiss: () async {
-              return await showDialog<bool>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text("Are you sure?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(false);
-                            Slidable.of(context)?.close();
-                          },
-                          child: Text("Cancel"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                            ChatServices().deleteChat(roomID: doc.id);
-                          },
-                          child: Text("Confirm"),
-                        ),
-                      ],
-                    ),
-                  ) ??
-                  false;
-            },
+  String otherUid = participants.firstWhere((uid) => uid != userID.value);
+  String otherUsername = usernames[otherUid] ?? "Unknown";
 
-            onDismissed: () {},
-            dismissThreshold: 0.1,
-          ),
-          motion: BehindMotion(),
-          children: [
-            SlidableAction(
-              icon: Icons.delete,
-              backgroundColor: Colors.red,
-              onPressed: (context) {
-                print(doc.id);
-              },
-              label: "Delete",
-            ),
-          ],
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      color: currentTheme.value
+          ? const Color.fromARGB(120, 211, 211, 212)
+          : const Color.fromARGB(255, 35, 36, 35),
+    ),
+    margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+    child: Slidable(
+      key: ValueKey(doc.id),
+      endActionPane: ActionPane(
+        motion: const BehindMotion(),
+        dismissible: DismissiblePane(
+          dismissThreshold: 0.3,
+          onDismissed: () async {
+            final deletedChatData = data; // Store a copy before deleting
+            final deletedChatId = doc.id;
+
+            // Delete the chat
+            await ChatServices().deleteChat(roomID: deletedChatId);
+
+            // Show snackbar with undo option
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Chat with $otherUsername deleted'),
+                action: SnackBarAction(
+                  label: 'Undo',
+                  onPressed: () async {
+                    await ChatServices().restoreChat(
+                      roomID: deletedChatId,
+                      chatData: deletedChatData,
+                    );
+                  },
+                ),
+                duration: const Duration(seconds: 5),
+              ),
+            );
+          },
         ),
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-          child: InkWell(
-            onTap: () {
-              Future.delayed(Duration(milliseconds: 200), () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return userChatPage(
-                        u1: otherUid,
-                        u2: userID.value,
-                        senderUsername: currentUser.value,
-                        receiverUsername: otherUsername,
+        children: [
+          SlidableAction(
+            icon: Icons.delete,
+            backgroundColor: Colors.red,
+            label: "Delete",
+            onPressed: (_) async {
+              final deletedChatData = data;
+              final deletedChatId = doc.id;
+
+              await ChatServices().deleteChat(roomID: deletedChatId);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Chat with $otherUsername deleted'),
+                  action: SnackBarAction(
+                    label: 'Undo',
+                    onPressed: () async {
+                      await ChatServices().restoreChat(
+                        roomID: deletedChatId,
+                        chatData: deletedChatData,
                       );
                     },
                   ),
-                );
-              });
+                  duration: const Duration(seconds: 5),
+                ),
+              );
             },
-            borderRadius: BorderRadius.circular(20),
-            child: ListTile(
-              leading: Avatar(seed: otherUsername, r: 25),
-              title: Text(otherUsername),
-              subtitle: Text(
-                data["lastMsg"] ?? "",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: Text(
-                data["lastUpdated"] != null
-                    ? _formatTimestamp(data["lastUpdated"])
-                    : "",
-                style: const TextStyle(fontSize: 12),
-              ),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: () {
+            Future.delayed(const Duration(milliseconds: 200), () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return userChatPage(
+                      u1: otherUid,
+                      u2: userID.value,
+                      senderUsername: currentUser.value,
+                      receiverUsername: otherUsername,
+                    );
+                  },
+                ),
+              );
+            });
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: ListTile(
+            leading: Avatar(seed: otherUsername, r: 25),
+            title: Text(otherUsername),
+            subtitle: Text(
+              data["lastMsg"] ?? "",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: Text(
+              data["lastUpdated"] != null
+                  ? _formatTimestamp(data["lastUpdated"])
+                  : "",
+              style: const TextStyle(fontSize: 12),
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+
 
   String _formatTimestamp(Timestamp timestamp) {
     DateTime date = timestamp.toDate();
