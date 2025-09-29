@@ -1,10 +1,10 @@
-import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
+//import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/database.dart';
-import 'package:popapp/models/message.dart';
-import 'package:popapp/screen/views/pages/chat.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/database.dart';
+import 'package:SHADE/models/message.dart';
+import 'package:SHADE/screen/views/pages/chat.dart';
 
 class ChatServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

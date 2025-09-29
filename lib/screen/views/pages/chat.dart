@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:keyboard_visibility_pro/keyboard_visibility_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/database.dart';
-import 'package:popapp/screen/views/widgets/avatar.dart';
-import 'package:popapp/services/chat_services.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/database.dart';
+import 'package:SHADE/screen/views/widgets/avatar.dart';
+import 'package:SHADE/services/chat_services.dart';
 import 'package:intl/intl.dart';
-import 'package:popapp/services/profanity.dart';
+import 'package:SHADE/services/profanity.dart';
 
 class ChatPage extends StatefulWidget {
   final String roomID;

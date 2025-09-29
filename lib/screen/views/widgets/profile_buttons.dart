@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
 
 class ProfileButoon extends StatefulWidget {
   final String title;

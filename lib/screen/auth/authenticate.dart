@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:popapp/screen/auth/login.dart';
-import 'package:popapp/screen/auth/register.dart';
+import 'package:SHADE/screen/auth/login.dart';
+import 'package:SHADE/screen/auth/register.dart';
 import 'package:rive/rive.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
 
 class Auth extends StatefulWidget {
   const Auth({super.key});
@@ -17,7 +17,7 @@ class _AuthState extends State<Auth> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          ' PopApp',
+          ' SHADE',
           style: TextStyle(
             fontSize: 24,
             color: currentTheme.value ? Colors.black : Colors.white,
@@ -40,7 +40,7 @@ class _AuthState extends State<Auth> {
                   : const Color.fromARGB(118, 255, 255, 255),
             ),
             Text(
-              'Welcome to PopApp',
+              'Welcome to SHADE',
               style: TextStyle(
                 color: currentTheme.value ? Colors.black : Colors.white,
                 fontSize: 24,

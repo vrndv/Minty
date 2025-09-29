@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/database.dart';
-import 'package:popapp/screen/auth/register.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/database.dart';
+import 'package:SHADE/screen/auth/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:popapp/screen/auth/updateinfo.dart';
-import 'package:popapp/screen/home/home.dart';
+import 'package:SHADE/screen/auth/updateinfo.dart';
+import 'package:SHADE/screen/home/home.dart';
 
 class Login extends StatefulWidget {
   final IconData icon;

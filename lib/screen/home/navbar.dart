@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});

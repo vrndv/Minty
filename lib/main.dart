@@ -3,9 +3,9 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/firebase_options.dart';
-import 'package:popapp/rootAuth.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/firebase_options.dart';
+import 'package:SHADE/rootAuth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +26,7 @@ class _MainAppState extends State<MainApp> {
       valueListenable: currentTheme,
       builder: (context, themeMode, child) {
         return MaterialApp(
-          title: 'PopApp',
+          title: 'SHADE',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(

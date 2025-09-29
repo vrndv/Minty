@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/screen/auth/authenticate.dart';
-import 'package:popapp/screen/views/widgets/avatar.dart';
-import 'package:popapp/screen/views/widgets/profile_buttons.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/screen/auth/authenticate.dart';
+import 'package:SHADE/screen/views/widgets/avatar.dart';
+import 'package:SHADE/screen/views/widgets/profile_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 //bool func

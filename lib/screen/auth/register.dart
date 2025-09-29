@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/screen/auth/login.dart';
-import 'package:popapp/screen/auth/updateinfo.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/screen/auth/login.dart';
+import 'package:SHADE/screen/auth/updateinfo.dart';
 
 class Register extends StatefulWidget {
   final IconData icon;

@@ -1,6 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
 
 class DatabaseService {
   final db = FirebaseFirestore.instance;

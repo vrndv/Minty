@@ -1,9 +1,9 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/database.dart';
-import 'package:popapp/screen/home/home.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/database.dart';
+import 'package:SHADE/screen/home/home.dart';
 
 class UpdateInfo extends StatefulWidget {
   final String userEmail;

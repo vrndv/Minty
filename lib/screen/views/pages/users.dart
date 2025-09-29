@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/screen/views/widgets/avatar.dart';
-import 'package:popapp/services/chat_services.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/screen/views/widgets/avatar.dart';
+import 'package:SHADE/services/chat_services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Users extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/screen/views/pages/profile.dart';
-import 'package:popapp/screen/views/pages/users.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/screen/views/pages/profile.dart';
+import 'package:SHADE/screen/views/pages/users.dart';
 
 List<Widget> pages = [Users(), ProfilePage()];
 

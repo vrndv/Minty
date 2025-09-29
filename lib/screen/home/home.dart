@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:popapp/screen/auth/authenticate.dart';
-import 'package:popapp/screen/home/navbar.dart';
-import 'package:popapp/screen/views/pages/search.dart';
-import 'package:popapp/screen/views/tree.dart';
-import 'package:popapp/dataNotifiers/notifier.dart';
-import 'package:popapp/screen/views/widgets/avatar.dart';
+import 'package:SHADE/screen/auth/authenticate.dart';
+import 'package:SHADE/screen/home/navbar.dart';
+import 'package:SHADE/screen/views/pages/search.dart';
+import 'package:SHADE/screen/views/tree.dart';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/screen/views/widgets/avatar.dart';
 
 class DataBaseForm extends StatefulWidget {
   final String userEmail;
