@@ -70,7 +70,9 @@ class _searchPageState extends State<searchPage> {
                           var username = doc['username']
                               .toString()
                               .toLowerCase();
-                          return (username.contains(name.toLowerCase()) && username.toLowerCase() != currentUser.value.toLowerCase());
+                          return (username.contains(name.toLowerCase()) &&
+                              username.toLowerCase() !=
+                                  currentUser.value.toLowerCase());
                         }).toList();
 
                   return ListView.builder(
@@ -85,7 +87,10 @@ class _searchPageState extends State<searchPage> {
                               builder: (context) {
                                 return userChatPage(
                                   u1: data["uid"],
-                                  u2: userID.value, senderUsername: currentUser.value, receiverUsername: data["username"],
+                                  u2: userID.value,
+                                  senderUsername: currentUser.value,
+                                  receiverUsername: data["username"],
+                                  pfp: data["pfp"]??data["username"],
                                 );
                               },
                             ),
