@@ -23,6 +23,7 @@ class _UsersState extends State<Users> {
       curve: Curves.fastOutSlowIn,
     );
   }
+var isUndo = false;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +57,7 @@ class _UsersState extends State<Users> {
                     transitionDuration: const Duration(milliseconds: 200),
                     pageBuilder: (context, animation, secondaryAnimation) {
                       return userChatPage(
+                        pfp: "global",
                         u1: "global",
                         u2: "global",
                         senderUsername: currentUser.value,
@@ -126,7 +128,7 @@ class _UsersState extends State<Users> {
 
   List participants = data["participants"] ?? [];
   Map usernames = data["usernames"] ?? {};
-
+  Map pfps = data["pfps"] ?? {};
   if (participants.isEmpty ||
       !usernames.containsKey(userID.value) ||
       usernames.containsKey("global")) {
@@ -135,7 +137,7 @@ class _UsersState extends State<Users> {
 
   String otherUid = participants.firstWhere((uid) => uid != userID.value);
   String otherUsername = usernames[otherUid] ?? "Unknown";
-
+  String Otherpfp = pfps[otherUid] ?? otherUsername;
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(20),
@@ -153,26 +155,28 @@ class _UsersState extends State<Users> {
           onDismissed: () async {
             final deletedChatData = data; // Store a copy before deleting
             final deletedChatId = doc.id;
-
-            // Delete the chat
-            await ChatServices().deleteChat(roomID: deletedChatId);
-
+            ChatServices().tempDeleteChat(roomID: deletedChatId);
             // Show snackbar with undo option
-            ScaffoldMessenger.of(context).showSnackBar(
+             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Chat with $otherUsername deleted'),
                 action: SnackBarAction(
                   label: 'Undo',
                   onPressed: () async {
-                    await ChatServices().restoreChat(
-                      roomID: deletedChatId,
-                      chatData: deletedChatData,
-                    );
+                    restoreChat(roomID: deletedChatId, chatData: deletedChatData);
+                    isUndo = true;
                   },
                 ),
                 duration: const Duration(seconds: 5),
               ),
             );
+            Future.delayed(Duration(seconds: 5)).then((value) async {
+              if(!isUndo){
+                await ChatServices().deleteChat(roomID: deletedChatId);
+                isUndo = false;
+              }
+              
+            },);
           },
         ),
         children: [
@@ -184,7 +188,7 @@ class _UsersState extends State<Users> {
               final deletedChatData = data;
               final deletedChatId = doc.id;
 
-              await ChatServices().deleteChat(roomID: deletedChatId);
+              await ChatServices().tempDeleteChat(roomID: deletedChatId);
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -192,15 +196,21 @@ class _UsersState extends State<Users> {
                   action: SnackBarAction(
                     label: 'Undo',
                     onPressed: () async {
-                      await ChatServices().restoreChat(
-                        roomID: deletedChatId,
-                        chatData: deletedChatData,
-                      );
+                    restoreChat(roomID: deletedChatId, chatData: deletedChatData);
+                    isUndo = true;
                     },
                   ),
                   duration: const Duration(seconds: 5),
                 ),
               );
+              Future.delayed(Duration(seconds: 5)).then((value) async {
+              if(!isUndo){
+                await ChatServices().deleteChat(roomID: deletedChatId);
+                isUndo = false;
+              }
+              
+            }
+            );
             },
           ),
         ],
@@ -220,6 +230,7 @@ class _UsersState extends State<Users> {
                       u2: userID.value,
                       senderUsername: currentUser.value,
                       receiverUsername: otherUsername,
+                      pfp:Otherpfp,
                     );
                   },
                 ),
@@ -228,7 +239,7 @@ class _UsersState extends State<Users> {
           },
           borderRadius: BorderRadius.circular(20),
           child: ListTile(
-            leading: Avatar(seed: otherUsername, r: 25),
+            leading: Avatar(seed:Otherpfp ??otherUsername, r: 25),
             title: Text(otherUsername),
             subtitle: Text(
               data["lastMsg"] != null
