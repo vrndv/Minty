@@ -15,6 +15,7 @@ class ChatPage extends StatefulWidget {
   final String receiverUsername;
   final String senderUsername;
   final String receiverUid;
+  final String pfp;
 
   const ChatPage({
     super.key,
@@ -23,6 +24,7 @@ class ChatPage extends StatefulWidget {
     required String this.receiverUid,
     required String this.senderUsername,
     required String this.receiverUsername,
+    required String this.pfp,
   });
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -120,7 +122,7 @@ class _ChatPageState extends State<ChatPage> {
           appBar: AppBar(
             leading: Padding(
               padding: const EdgeInsets.only(left: 15, top: 1, bottom: 1),
-              child: Avatar(seed: widget.receiverUsername, r: 20),
+              child: Avatar(seed: widget.pfp, r: 20),
             ),
             title: Text(widget.receiverUsername),
           ),
