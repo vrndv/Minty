@@ -70,9 +70,9 @@ class _AvatarPickerState extends State<AvatarPicker> {
                     AvatarItem(seed: seed[5]),
                   ],
                 ),
-                SizedBox(height: 30),
-                FilledButton(
-                  child: Icon(Icons.all_inclusive_rounded, size: 50),
+                TextButton(
+                //style: TextButton.styleFrom(backgroundColor:const Color.fromARGB(200, 51, 77, 111) ),
+                  child: CircleAvatar(child: Text("🎲",style: TextStyle(fontSize: 40),),radius: 33,),
                   onPressed: () {
                     getSeed();
                   },
