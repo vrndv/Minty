@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,12 +68,19 @@ class _DataBaseFormState extends State<DataBaseForm> {
         ),
       );
     }
+    getPfp();
   }
+
+Future<void> getPfp()async{
+  var data =await FirebaseFirestore.instance.collection("user").where("uid",isEqualTo:userID.value,).get();
+  var pfp = data.docs.first.data()["pfp"];
+  currentPFP.value = pfp??currentUser.value;
+  
+}
 
   @override
   void dispose() {
     currentPageNotifier.value = 0;
-    print("bye world");
     super.dispose();
   }
 
@@ -90,7 +98,7 @@ class _DataBaseFormState extends State<DataBaseForm> {
           title: ValueListenableBuilder(
             valueListenable: currentPageNotifier,
             builder: (context, value, child) {
-              return value != 1 ? Text('Pop Home') : Text('Profile');
+              return value != 1 ? Text('SHADE',) : Text('Profile');
             },
           ),
           elevation: 20,
@@ -102,7 +110,7 @@ class _DataBaseFormState extends State<DataBaseForm> {
                 valueListenable: currentPageNotifier,
                 builder: (context, value, child) {
                   return value != 1
-                      ?  Avatar(seed: currentUser.value, r: 20)
+                      ? ValueListenableBuilder(valueListenable: currentPFP, builder: (context, value, child) =>  Avatar(seed: currentPFP.value, r: 20),)
                       : GestureDetector(
                           onTap: () {
                             //ADD POP UP WARNING HERE => sabarikasi
