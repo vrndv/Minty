@@ -1,5 +1,3 @@
-//import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
-import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:SHADE/dataNotifiers/notifier.dart';
 import 'package:SHADE/database.dart';
@@ -41,6 +39,7 @@ class ChatServices {
       "reciever":receiverUsername,
       "lastMsg" : message,
       "lastUpdated": time,
+      "pfps" : {senderUid : currentPFP.value},
     }, SetOptions(merge: true)); 
     await chatDocRef.collection("messages").add(newMessage.toMap());
   }
@@ -56,17 +55,6 @@ class ChatServices {
 
 
 Future<void> deleteChat({required String roomID})async{
-  try {
-    final doc = await FirebaseFirestore.instance
-          .collection('ver')
-          .doc('currentVer')
-          .get();
-    final String link = doc["api"];
-    final url = Uri.parse("$link/:$roomID");
-    final resp = await http.post(url);
-  } catch (e) {
-    null;
-  }finally{
    final ref = _firestore.collection("chats").doc(roomID);
    final snapshot = await ref.collection("messages").get();
    final batch = _firestore.batch();
@@ -76,14 +64,21 @@ Future<void> deleteChat({required String roomID})async{
   batch.delete(ref);
   await batch.commit();
 _firestore.clearPersistence();
+}
+Future<void> tempDeleteChat({required String roomID})async{
+
+
+     final batch = _firestore.batch();
+  final ref = _firestore.collection("chats").doc(roomID);
+  batch.delete(ref);
+  await batch.commit();
+_firestore.clearPersistence();
 }}
+
 
 Future<void> restoreChat({required String roomID, required Map<String, dynamic> chatData}) async {
   await FirebaseFirestore.instance.collection('chats').doc(roomID).set(chatData);
 }
-
-}
-
 
 class UserServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -101,6 +96,7 @@ ChatPage userChatPage({
   required String u2,
   required String senderUsername,
   required String receiverUsername,
+  required String pfp,
 }) {
   if (u1 == "global") {
     return ChatPage(
@@ -108,7 +104,8 @@ ChatPage userChatPage({
       senderUid: u2,
       receiverUid: "global",
       senderUsername: senderUsername,
-      receiverUsername: "global",
+      receiverUsername: "global", 
+      pfp: 'a',
     );
   } else {
     final List<String> ids = [u1, u2];
@@ -121,6 +118,7 @@ ChatPage userChatPage({
       receiverUid: u1,
       senderUsername: senderUsername,
       receiverUsername: receiverUsername,
+      pfp:pfp,
     );
   }
 }
