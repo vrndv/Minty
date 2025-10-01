@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:SHADE/dataNotifiers/notifier.dart';
+import 'package:SHADE/database.dart';
 import 'package:flutter/material.dart';
 
 class AvatarPicker extends StatefulWidget {
@@ -93,7 +95,9 @@ class AvatarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print(seed);
+       currentPFP.value = seed;
+       DatabaseService().pushAvatar(id: userID.value, seed: seed);
+       Navigator.pop(context);
       },
       child: CircleAvatar(
         radius: 80,
