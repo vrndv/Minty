@@ -102,4 +102,10 @@ class DatabaseService {
         .get();
     return check.docs.first["username"];
   }
+
+  Future<void> pushAvatar({ required String id,required String seed}) async {
+    var data =await db.collection("user").where("uid",isEqualTo:id,).limit(1).get();
+    var docid = data.docs.first.id;
+    await db.collection("user").doc(docid).update({"pfp":seed});
+  }
 }
