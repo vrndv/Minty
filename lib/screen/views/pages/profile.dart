@@ -87,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     Align(
                       alignment: Alignment.center,
-                      child: Avatar(seed: currentUser.value, r: 60.0),
+                      child:ValueListenableBuilder(valueListenable: currentPFP, builder: (context, value, child) =>  Avatar(seed: currentPFP.value, r: 60),)
                     ),
                     Positioned(
                       bottom: 60,
