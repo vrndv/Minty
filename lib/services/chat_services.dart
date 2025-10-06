@@ -61,16 +61,15 @@ Future<void> deleteChat({required String roomID})async{
    for (var doc in snapshot.docs) {
      batch.delete(doc.reference);
    }
-  batch.delete(ref);
   await batch.commit();
 _firestore.clearPersistence();
 }
 Future<void> tempDeleteChat({required String roomID})async{
-
-
      final batch = _firestore.batch();
   final ref = _firestore.collection("chats").doc(roomID);
-  batch.delete(ref);
+  batch.update(ref, {
+    'participants':FieldValue.delete(),
+   });
   await batch.commit();
 _firestore.clearPersistence();
 }}
