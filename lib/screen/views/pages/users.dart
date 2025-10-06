@@ -4,6 +4,7 @@ import 'package:SHADE/dataNotifiers/notifier.dart';
 import 'package:SHADE/screen/views/widgets/avatar.dart';
 import 'package:SHADE/services/chat_services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 
 class Users extends StatefulWidget {
   const Users({super.key});
@@ -32,6 +33,7 @@ var isUndo = false;
         children: [
           Column(
             children: [
+              SizedBox(height: 5,),
               SearchBar(
                 onTap: () {
                   isSearch.value = true;
@@ -40,7 +42,6 @@ var isUndo = false;
 
                 hintText: "Search",
                 leading: Icon(Icons.search),
-                onChanged: (value) => print(value),
               ),
 
               Expanded(child: _buildUserList()),
@@ -266,7 +267,6 @@ var isUndo = false;
 
 
   String _formatTimestamp(Timestamp timestamp) {
-    DateTime date = timestamp.toDate();
-    return "${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
+    return  DateFormat('hh:mm a').format(timestamp.toDate());
   }
 }
