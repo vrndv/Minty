@@ -240,7 +240,7 @@ var isUndo = false;
           },
           borderRadius: BorderRadius.circular(20),
           child: ListTile(
-            leading: Avatar(seed:Otherpfp ??otherUsername, r: 25),
+            leading: Avatar(seed:Otherpfp, r: 25),
             title: Text(otherUsername),
             subtitle: Text(
               data["lastMsg"] != null
