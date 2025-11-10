@@ -14,3 +14,5 @@ ValueNotifier<int> currVer = ValueNotifier(22);
 ValueNotifier<String> Strversion = ValueNotifier("null");
 ValueNotifier<bool> isLogged=ValueNotifier(false);
 ValueNotifier<int> chatLen = ValueNotifier(0);
+ValueNotifier<List> AiSessionHistory = ValueNotifier([]);
+ValueNotifier<String> Balance = ValueNotifier("");
