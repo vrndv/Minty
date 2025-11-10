@@ -21,10 +21,10 @@ class MainApp extends StatefulWidget {
 }
 class _MainAppState extends State<MainApp> {
   final noS = NoScreenshot.instance;
-  @override
+  @override 
   void initState() {
     super.initState();
-    noS.screenshotOff();
+    noS.screenshotOn();
   }
   @override
   void dispose() {
