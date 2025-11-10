@@ -21,7 +21,7 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = "my-key-alias"        
+            keyAlias = "key"        
             keyPassword = "Varun@4044"           
             storeFile = file("my-release-key.jks")
             storePassword = "Varun@4044"          
@@ -32,7 +32,6 @@ android {
         getByName("debug") {
             isMinifyEnabled = false  
             isShrinkResources = false
-            signingConfig = signingConfigs.getByName("debug")
         }
 
         getByName("release") {
