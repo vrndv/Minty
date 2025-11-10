@@ -87,16 +87,25 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     Align(
                       alignment: Alignment.center,
-                      child:ValueListenableBuilder(valueListenable: currentPFP, builder: (context, value, child) =>  Avatar(seed: currentPFP.value, r: 60),)
+                      child: ValueListenableBuilder(
+                        valueListenable: currentPFP,
+                        builder: (context, value, child) =>
+                            Avatar(seed: currentPFP.value, r: 60),
+                      ),
                     ),
                     Positioned(
                       bottom: 60,
                       left: 210,
                       child: GestureDetector(
                         onTap: () async {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return AvatarPicker();
-                          },));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return AvatarPicker();
+                              },
+                            ),
+                          );
                         },
                         onLongPress: () {
                           isProfanity.value = !isProfanity.value;

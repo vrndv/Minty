@@ -73,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
         receiverUid: widget.receiverUid,
         senderUsername: currentUser.value,
         receiverUsername: widget.receiverUsername,
-        isPhone : isPhone,
+        isPhone: isPhone,
       );
       scrollDown();
     }
@@ -95,10 +95,13 @@ class _ChatPageState extends State<ChatPage> {
     _isTyping.dispose();
     super.dispose();
   }
+
   bool isPhone = true;
 
   void phone() async {
-     isPhone = await DatabaseService().checkPhoneUser(username: widget.receiverUsername);
+    isPhone = await DatabaseService().checkPhoneUser(
+      username: widget.receiverUsername,
+    );
   }
 
   void scrollDown({int time = 300}) {
