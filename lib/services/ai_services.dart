@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:SHADE/dataNotifiers/aicred.dart';
 import 'package:SHADE/dataNotifiers/notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -74,8 +75,7 @@ Stream<String> pop1Stream(String message) async* {
 
 Stream<String> pop1AltStream(String message) async* {
   List history = AiSessionHistory.value;
-
-  const String openRouterApiKey = "redacted";
+  final String openRouterApiKey = aicred.value; 
 
   void addItem(String item) {
     history.add(item);
