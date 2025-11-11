@@ -8,6 +8,10 @@ import 'package:SHADE/screen/views/widgets/avatar.dart';
 import 'package:SHADE/services/chat_services.dart';
 import 'package:intl/intl.dart';
 import 'package:SHADE/services/profanity.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatPage extends StatefulWidget {
   final String roomID;
@@ -40,6 +44,7 @@ class _ChatPageState extends State<ChatPage> {
   ValueNotifier<bool> _isTyping = ValueNotifier(false);
   //Send Message
   bool i = true;
+
   Future<void> sendMessage(String msg) async {
     var text = msgcontroller.text;
     msgcontroller.clear();
@@ -83,6 +88,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     phone();
+    _loadWallpaper();
     msgcontroller.addListener(() {
       _isTyping.value = msgcontroller.text.trim().isNotEmpty;
     });
@@ -97,11 +103,78 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   bool isPhone = true;
+  //wallpaper load
+  File? _wallpaperImage;
+  final ImagePicker _picker = ImagePicker();
+  //
 
   void phone() async {
     isPhone = await DatabaseService().checkPhoneUser(
       username: widget.receiverUsername,
     );
+  }
+  //wallpaper methods
+
+  Future<void> _pickWallpaper() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final appDir = await getApplicationDocumentsDirectory();
+      final savedImagePath = '${appDir.path}/wallpaper_${widget.roomID}.jpg';
+
+      // 🧹 Delete old wallpaper if it exists
+      final oldFile = File(savedImagePath);
+      if (oldFile.existsSync()) {
+        await oldFile.delete();
+      }
+
+      // 💾 Copy new wallpaper to app storage
+      final savedImage = await File(pickedFile.path).copy(savedImagePath);
+
+      // 💿 Save wallpaper path in SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('wallpaper_${widget.roomID}', savedImage.path);
+
+      // 🔁 Clear Flutter’s image cache (force reload)
+      imageCache.clear();
+      imageCache.clearLiveImages();
+
+      // 🔄 Update the UI immediately
+      setState(() {
+        _wallpaperImage = savedImage;
+      });
+    }
+  }
+
+  Future<void> _loadWallpaper() async {
+    final prefs = await SharedPreferences.getInstance();
+    final path = prefs.getString('wallpaper_${widget.roomID}');
+    if (path != null && File(path).existsSync()) {
+      setState(() {
+        _wallpaperImage = File(path);
+      });
+    }
+  }
+
+  Future<void> _resetWallpaper() async {
+    final prefs = await SharedPreferences.getInstance();
+    final path = prefs.getString('wallpaper_${widget.roomID}');
+
+    // 🧹 Delete saved wallpaper file (if exists)
+    if (path != null && File(path).existsSync()) {
+      await File(path).delete();
+    }
+
+    // 🧽 Remove the saved entry from preferences
+    await prefs.remove('wallpaper_${widget.roomID}');
+
+    // 🔁 Clear Flutter image cache
+    imageCache.clear();
+    imageCache.clearLiveImages();
+
+    // 🔄 Update UI to default background
+    setState(() {
+      _wallpaperImage = null;
+    });
   }
 
   void scrollDown({int time = 300}) {
@@ -113,9 +186,8 @@ class _ChatPageState extends State<ChatPage> {
         curve: Curves.fastOutSlowIn,
       );
     }
-  }
+  } // final keyboardVisibilityController = Flutter
 
-  // final keyboardVisibilityController = Flutter
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -128,82 +200,111 @@ class _ChatPageState extends State<ChatPage> {
               child: Avatar(seed: widget.pfp, r: 20),
             ),
             title: Text(widget.receiverUsername),
+            actions: [
+              IconButton(
+                onPressed: _pickWallpaper,
+                icon: Icon(Icons.image),
+                tooltip: "change wallpaper",
+              ),
+              IconButton(
+                onPressed: _resetWallpaper,
+                icon: const Icon(Icons.delete),
+                tooltip: "reset wallpaper",
+              ),
+            ],
           ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                Expanded(child: _buildMessageList()),
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              if (_wallpaperImage != null)
+                Image.file(
+                  _wallpaperImage!,
+                  key: ValueKey(DateTime.now().microsecondsSinceEpoch),
+                  fit: BoxFit.cover,
+                )
+              else
+                Container(
+                  color: currentTheme.value
+                      ? Colors.grey[200]
+                      : const Color.fromARGB(225, 20, 20, 20),
+                ),
+              SafeArea(
+                child: Column(
+                  children: [
+                    Expanded(child: _buildMessageList()),
 
-                KeyboardVisibility(
-                  onChanged: (p0) => {
-                    if (p0 == true)
-                      {
-                        Future.delayed(
-                          const Duration(milliseconds: 150),
-                          () => scrollDown(time: 250),
-                        ),
+                    KeyboardVisibility(
+                      onChanged: (p0) => {
+                        if (p0 == true)
+                          {
+                            Future.delayed(
+                              const Duration(milliseconds: 150),
+                              () => scrollDown(time: 250),
+                            ),
+                          },
                       },
-                  },
-                  child: Container(
-                    color: currentTheme.value
-                        ? const Color.fromARGB(57, 165, 164, 164)
-                        : const Color.fromARGB(125, 12, 12, 12),
-                    padding: EdgeInsets.all(13),
-                    height: 70,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.only(right: 10),
-                            child: TextField(
-                              controller: msgcontroller,
-                              decoration: InputDecoration(
-                                hintText: value ? "Message" : "Enter Message",
-                                contentPadding: EdgeInsets.only(
-                                  top: 10,
-                                  left: 10,
+                      child: Container(
+                        color: currentTheme.value
+                            ? const Color.fromARGB(57, 165, 164, 164)
+                            : const Color.fromARGB(125, 12, 12, 12),
+                        padding: EdgeInsets.all(13),
+                        height: 70,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(right: 10),
+                                child: TextField(
+                                  controller: msgcontroller,
+                                  decoration: InputDecoration(
+                                    hintText: value
+                                        ? "Message"
+                                        : "Enter Message",
+                                    contentPadding: EdgeInsets.only(
+                                      top: 10,
+                                      left: 10,
+                                    ),
+                                    border: OutlineInputBorder(),
+                                  ),
                                 ),
-                                border: OutlineInputBorder(),
                               ),
                             ),
-                          ),
+                            ValueListenableBuilder<bool>(
+                              valueListenable: _isTyping,
+                              builder: (context, isTyping, child) {
+                                return IconButton(
+                                  onPressed: isTyping
+                                      ? () {
+                                          sendMessage("");
+                                        }
+                                      : null, // 👈 disable when empty
+                                  icon: TweenAnimationBuilder<Color?>(
+                                    tween: ColorTween(
+                                      begin: Colors.grey,
+                                      end: isTyping ? Colors.blue : Colors.grey,
+                                    ),
+                                    duration: const Duration(milliseconds: 250),
+                                    builder: (context, color, child) {
+                                      return Icon(Icons.send, color: color);
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
-
-                        ValueListenableBuilder<bool>(
-                          valueListenable: _isTyping,
-                          builder: (context, isTyping, child) {
-                            return IconButton(
-                              onPressed: isTyping
-                                  ? () {
-                                      sendMessage("");
-                                    }
-                                  : null, // 👈 disable when empty
-                              icon: TweenAnimationBuilder<Color?>(
-                                tween: ColorTween(
-                                  begin: Colors.grey,
-                                  end: isTyping ? Colors.blue : Colors.grey,
-                                ),
-                                duration: const Duration(milliseconds: 250),
-                                builder: (context, color, child) {
-                                  return Icon(Icons.send, color: color);
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
     );
-  }
+  } // Modify your StreamBuilder's builder to handle scrolling after build
 
-  // Modify your StreamBuilder's builder to handle scrolling after build
   Widget _buildMessageList() {
     return StreamBuilder(
       stream: _chatServices.getMessage(roomID: widget.roomID),
@@ -311,7 +412,6 @@ class _ChatPageState extends State<ChatPage> {
                         : const Color.fromARGB(255, 233, 233, 233),
                   ),
                 ),
-
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
