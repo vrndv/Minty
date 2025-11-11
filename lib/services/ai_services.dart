@@ -32,43 +32,89 @@ Stream<String> pop1Stream(String message) async* {
     AiSessionHistory.value = history;
   }
 
-  String prompt =
-      "You are Cipher Ai model:PoP-01, Previous chat: [${history.join(', ')}]. "
-      "User says: ${message}. Reply naturally and independently. "
-      "Only use past info if directly needed to answer; do not mention, repeat or acknowledge past messages explicitly.";
+  // Build prompt
+     
+  final lastMessages = history.length >= 3
+    ? history.sublist(history.length - 3)
+    : history;
+
+// Build chat history string safely
+final chatHistoryString = lastMessages
+    .map((msg) => '"user": "${msg}"')
+    .join(", ");
   addItem(message);
 
-  final url = Uri.parse('https://apifreellm.com/api/chat');
-  final body = jsonEncode({'message': prompt});
+  final url = Uri.parse('https://mlvoca.com/api/generate');
+  final body = jsonEncode({
+  "model": "deepseek-r1:1.5b",
+  "prompt": "You are a friendly chatbot. Reply in 1 short, casual sentence.  Only use past chat if needed. Do no repeat old messages.  Chat history: [ $chatHistoryString ]  Currently user says: ${message} give importance to current message",
+  "temperature": 0.1,
+  "max_tokens": 50,
+});
 
   try {
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: body,
-    );
+    final request = http.Request('POST', url)
+      ..headers['Content-Type'] = 'application/json'
+      ..body = body;
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final fullText = data['response'] ?? '';
-      for (final token in fullText.split(' ')) {
-        yield '$token ';
-        await Future.delayed(Duration(milliseconds: 50));
+    final streamedResponse = await request.send();
+
+    if (streamedResponse.statusCode == 200) {
+      final stream = streamedResponse.stream
+          .transform(utf8.decoder)
+          .transform(const LineSplitter());
+
+      bool inThinking = false;
+      bool thinkingShown = false;
+
+      await for (final line in stream) {
+        if (line.trim().isEmpty) continue;
+
+        try {
+          final jsonLine = jsonDecode(line);
+          final token = jsonLine['response'] ?? '';
+
+          if (jsonLine['done'] == true) break;
+
+          if (token.contains('<think>')) {
+            inThinking = true;
+            if (!thinkingShown) {
+              yield "*Thinking...* \n";
+              thinkingShown = true;
+            }
+            continue;
+          }
+
+          if (token.contains('</think>')) {
+            inThinking = false;
+            continue;
+          }
+
+          if (inThinking) continue; // Skip internal thoughts
+
+          if (token.isNotEmpty) {
+            yield token;
+            await Future.delayed(const Duration(milliseconds: 40));
+          }
+        } catch (_) {
+          yield "[stream error chunk]";
+        }
       }
     } else {
-      if (response.statusCode == 500) {
-        print("error 500, trying to re call ");
+      if (streamedResponse.statusCode == 500) {
+        print("error 500, trying to re-call");
         yield "*ERR-500 retrying...* \n\n\n";
         yield* pop1Stream(message);
       } else {
-        yield 'ⓘ ${response.statusCode} - ${response.body}';
+        final errorText =
+            await streamedResponse.stream.bytesToString();
+        yield 'ⓘ ${streamedResponse.statusCode} - $errorText';
       }
     }
   } catch (e) {
     yield "Error: Could not access API or process the request. Details: $e";
   }
 }
-
 // OpenRouter - pop1alt
 
 

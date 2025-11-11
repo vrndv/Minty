@@ -64,7 +64,10 @@ class _AiChatState extends State<AiChat> {
       });
     }
 
-    setState(() => isLoading = false);
+    setState(() {
+      scrollDown();
+      isLoading = false;
+    });
   }
 
   void check() async {
