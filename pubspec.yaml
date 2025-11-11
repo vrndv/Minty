@@ -37,8 +37,7 @@ dependencies:
   rive: ^0.13.20
   lottie: ^2.3.0 
   intl: ^0.18.1
-  google_fonts:
-  shared_preferences: ^2.1.1
+  google_fonts: ^5.0.0
   keyboard_visibility_pro: ^1.0.0
   url_launcher: ^6.3.2
   flutter_slidable: ^4.0.3
