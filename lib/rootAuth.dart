@@ -4,11 +4,28 @@ import 'package:SHADE/dataNotifiers/notifier.dart';
 import 'package:SHADE/database.dart';
 import 'package:SHADE/screen/auth/authenticate.dart';
 import 'package:SHADE/screen/home/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class RootAppLogic extends StatelessWidget {
+class RootAppLogic extends StatefulWidget {
   const RootAppLogic({super.key});
 
   @override
+  State<RootAppLogic> createState() => _RootAppLogicState();
+}
+
+class _RootAppLogicState extends State<RootAppLogic> {
+  @override
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> getTheme() async {
+    final pref = await SharedPreferences.getInstance();
+    final val = pref.getBool("currentTheme") ?? false;
+    currentTheme.value = val;
+  }
+
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),

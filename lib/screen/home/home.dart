@@ -8,6 +8,7 @@ import 'package:SHADE/screen/views/pages/search.dart';
 import 'package:SHADE/screen/views/tree.dart';
 import 'package:SHADE/dataNotifiers/notifier.dart';
 import 'package:SHADE/screen/views/widgets/avatar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DataBaseForm extends StatefulWidget {
   final String userEmail;
@@ -69,14 +70,20 @@ class _DataBaseFormState extends State<DataBaseForm> {
       );
     }
     getPfp();
+     getTheme();
   }
-
+Future<void> getTheme() async {
+    final pref = await SharedPreferences.getInstance();
+    final val = pref.getBool("currentTheme") ?? false;
+    currentTheme.value = val;
+  }
 Future<void> getPfp()async{
   var data =await FirebaseFirestore.instance.collection("user").where("uid",isEqualTo:userID.value,).get();
   var pfp = data.docs.first.data()["pfp"];
   currentPFP.value = pfp??currentUser.value;
   
 }
+
 
   @override
   void dispose() {
@@ -125,6 +132,7 @@ Future<void> getPfp()async{
                                   actions: [
                                     TextButton(
                                       onPressed: () {
+                                        
                                         Navigator.of(context).pop();
                                         //closes the dialgoues
                                       },
@@ -135,6 +143,7 @@ Future<void> getPfp()async{
                                         Navigator.of(context).pop();
                                         //closes the dialgoues
                                         FirebaseAuth.instance.signOut();
+                                        currentTheme.value = false;
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(

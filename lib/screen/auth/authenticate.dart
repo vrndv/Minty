@@ -20,13 +20,13 @@ class _AuthState extends State<Auth> {
   AnimatedTextController? MyAnim;
   @override
   void initState() {
-    super.initState();
     Future.delayed(Duration(milliseconds: 1500), () {
       setState(() {
         show = true;
       });
     });
     flickerTimer();
+    super.initState();
   }
 
   flickerTimer() async {
@@ -96,6 +96,7 @@ class _AuthState extends State<Auth> {
                                   top: 15,
                                   child: GestureDetector(
                                     onTap: () {
+                                      print(currentTheme.value);
                                       playFlicker();
                                     },
                                     child: Text(

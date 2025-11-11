@@ -74,7 +74,12 @@ class _LoginState extends State<Login> {
             builder: (context) {
               currentPageNotifier.value = 0;
               currentUser.value = uname;
-              userID.value = FirebaseAuth.instance.currentUser!.uid;
+              try {
+                userID.value = FirebaseAuth.instance.currentUser!.uid;
+              } catch (e) {
+                print("error is : $e");
+              }
+              
               return DataBaseForm(userEmail: uname, page: 0);
             },
           ),

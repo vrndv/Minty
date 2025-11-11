@@ -6,6 +6,7 @@ import 'package:SHADE/dataNotifiers/notifier.dart';
 import 'package:SHADE/screen/auth/authenticate.dart';
 import 'package:SHADE/screen/views/widgets/avatar.dart';
 import 'package:SHADE/screen/views/widgets/profile_buttons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 //bool func
@@ -46,6 +47,10 @@ class _ProfilePageState extends State<ProfilePage> {
         print(Strversion.value);
       });
     }
+  }
+  Future<void> saveThemeValue({required bool val})async{
+    final pref = await SharedPreferences.getInstance();
+    await pref.setBool('currentTheme',val );
   }
 
   @override
@@ -159,6 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
           function: () {
             setState(() {
               currentTheme.value = !currentTheme.value;
+              saveThemeValue(val:currentTheme.value);
             });
           },
           title: 'Theme',
