@@ -1,13 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:SHADE/dataNotifiers/notifier.dart';
 import 'package:SHADE/screen/auth/login.dart';
 import 'package:SHADE/screen/auth/updateinfo.dart';
+import 'package:SHADE/screen/views/widgets/auth_wave.dart';
+import 'package:SHADE/screen/views/widgets/login_btn.dart';
 
 class Register extends StatefulWidget {
   final IconData icon;
   final String barTitle;
   final String subText;
+
   const Register({
     super.key,
     required this.icon,
@@ -21,281 +24,276 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   String? err;
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController pwController = TextEditingController();
   final TextEditingController cpwController = TextEditingController();
+
   bool pwerrClr = false;
   bool emailerrClr = false;
 
-  void check(){
-    if (pwController.text == cpwController.text){
-      pwerrClr = false;
-      setState(() {
-        
-      });
-    }else{
-      setState(() {
-        pwerrClr = true;
-      });
-      
-    }
+  void check() {
+    setState(() {
+      pwerrClr = pwController.text != cpwController.text;
+    });
   }
 
-   void register() async {
+  Future<void> register() async {
     err = "";
     if (pwController.text != cpwController.text) {
       setState(() {
-        err = '$err The passwords does not match \n';
+        err = '$err The passwords do not match \n';
         pwerrClr = true;
       });
-    } else {
-      setState(() {
-        pwerrClr = false;
-      });
-      try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text,
-          password: pwController.text,
-        );
-        
-          emailerrClr = false;
+      return;
+    }
 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return UpdateInfo(userEmail: emailController.text);
-              },
-            ),
-          );
-      
-      } on FirebaseAuthException catch (e) {
-        setState(() {
-          if (e.code == 'weak-password') {
+    setState(() {
+      pwerrClr = false;
+    });
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: pwController.text,
+      );
+
+      emailerrClr = false;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UpdateInfo(userEmail: emailController.text),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        switch (e.code) {
+          case 'weak-password':
             err = 'The password provided is too weak.\n';
             emailerrClr = false;
             pwerrClr = true;
-          }
-          if (e.code == 'email-already-in-use') {
+            break;
+          case 'email-already-in-use':
             err = '$err The account already exists for that email.\n';
             emailerrClr = true;
-             pwerrClr = false;
-          }
-
-          if (e.code == 'invalid-email') {
+            pwerrClr = false;
+            break;
+          case 'invalid-email':
             err = '$err The email address is not valid.\n';
             emailerrClr = true;
-             pwerrClr = false;
-          }
-        });
-      }
+            pwerrClr = false;
+            break;
+        }
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.barTitle)),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 20),
-              Icon(widget.icon, size: 50, color:currentTheme.value ? const Color.fromARGB(104, 0, 0, 0) : const Color.fromARGB(118, 255, 255, 255)),
-              SizedBox(height: 20),
-              Text(
-                "Let's get you started ",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-              ),
-              SizedBox(height: 80),
-              Text(
-                err ?? "",
-                style: TextStyle(color: Colors.red, fontSize: 16),
-              ),
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            const AuthWave(),
+            SingleChildScrollView(
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
 
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-                child: TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                  labelText: "Email",
-                  labelStyle: TextStyle(color:Colors.grey ),
-                   hint: Text(
-                        "",
-                        style: TextStyle(
-                          color: currentTheme.value
-                              ? Colors.black26
-                              : Colors.white30,
+                    const SizedBox(height: 200),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        
+                        Container(
+                          //color: Colors.amber,
+                          width: 160,
+                          height: 60,
+                          child: Text(
+                            " Let's get you",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        const Positioned(
+                          top: 15,
+                          child: Text(
+                            'Started !',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 40,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 50),
+                    Text(
+                      err ?? "",
+                      style: const TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+
+                    // Email field
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      child: TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: "Email",
+                          labelStyle: const TextStyle(color: Colors.grey),
+                          hint: Text(
+                            "myself@abc.com",
+                            style: TextStyle(
+                              color: currentTheme.value
+                                  ? Colors.black26
+                                  : Colors.white30,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: emailerrClr
+                                  ? const Color.fromARGB(255, 241, 57, 44)
+                                  : const Color.fromARGB(82, 255, 254, 254),
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: emailerrClr
+                                  ? const Color.fromARGB(255, 255, 44, 29)
+                                  : const Color.fromARGB(255, 167, 129, 86),
+                              width: pwerrClr ? 1.95 : 1.5,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
                         ),
                       ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: emailerrClr
-                            ? const Color.fromARGB(255, 241, 57, 44)
-                            : const Color.fromARGB(82, 255, 254, 254),
-                        width: 1.5,
-                      ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: emailerrClr
-                            ? const Color.fromARGB(255, 255, 44, 29)
-                            : const Color.fromARGB(255, 167, 129, 86),
-                        width: pwerrClr ? 1.95 : 1.5,
-                      ),
-                    ),
-                    hintStyle: TextStyle(
-                      color: const Color.fromARGB(55, 0, 0, 0),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                ),
-              ),
 
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TextField(
-                  controller: pwController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                  labelText: "Password",
-                  labelStyle: TextStyle(color:Colors.grey ),
-                    hint: Text(
-                        "",
-                        style: TextStyle(
-                          color: currentTheme.value
-                              ? Colors.black26
-                              : Colors.white30,
+                    // Password field
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: TextField(
+                        controller: pwController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          hintText: "%abc@123# ",
+                          labelStyle: const TextStyle(color: Colors.grey),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: pwerrClr
+                                  ? const Color.fromARGB(255, 241, 57, 44)
+                                  : const Color.fromARGB(82, 255, 254, 254),
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: pwerrClr
+                                  ? const Color.fromARGB(255, 255, 44, 29)
+                                  : const Color.fromARGB(255, 167, 129, 86),
+                              width: pwerrClr ? 1.95 : 1.5,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
                         ),
                       ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: pwerrClr
-                            ? const Color.fromARGB(255, 241, 57, 44)
-                            : const Color.fromARGB(82, 255, 254, 254),
-                        width: 1.5,
-                      ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: pwerrClr
-                            ? const Color.fromARGB(255, 255, 44, 29)
-                            :const Color.fromARGB(255, 167, 129, 86),
-                        width: pwerrClr ? 1.95 : 1.5,
-                      ),
-                    ),
-                    hintStyle: TextStyle(
-                      color: const Color.fromARGB(55, 0, 0, 0),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                ),
-              ),
 
-              SizedBox(height: 20),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TextField(
-                  onChanged: (value) => check(),
-                  controller: cpwController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                  labelText: "Confirm Password",
-                  labelStyle: TextStyle(color:Colors.grey ),
-                    hint: Text(
-                        "",
-                        style: TextStyle(
-                          color: currentTheme.value
-                              ? Colors.black26
-                              : Colors.white30,
+                    const SizedBox(height: 20),
+
+                    // Confirm Password field
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: TextField(
+                        onChanged: (_) => check(),
+                        controller: cpwController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: "Confirm Password",
+                          hintText: "%abc@123# ",
+                          labelStyle: const TextStyle(color: Colors.grey),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: pwerrClr
+                                  ? const Color.fromARGB(255, 241, 57, 44)
+                                  : const Color.fromARGB(82, 255, 254, 254),
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: pwerrClr
+                                  ? const Color.fromARGB(255, 255, 44, 29)
+                                  : const Color.fromARGB(255, 167, 129, 86),
+                              width: pwerrClr ? 1.95 : 1.5,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
                         ),
                       ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: pwerrClr
-                            ? const Color.fromARGB(255, 241, 57, 44)
-                            :  const Color.fromARGB(82, 255, 254, 254),
-                        width: 1.5,
-                      ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: pwerrClr
-                            ? Color.fromARGB(255, 255, 44, 29)
-                            :const Color.fromARGB(255, 167, 129, 86),
-                        width: pwerrClr ? 1.95 : 1.5,
-                      ),
-                    ),
-                    hintStyle: TextStyle(
-                      color: const Color.fromARGB(55, 0, 0, 0),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                ),
-              ),
 
-              SizedBox(height: 40),
+                    const SizedBox(height: 40),
 
-              Center(
-                child: GestureDetector(
-                  onTap: () async {
-                    register();
-                  },
-                  child: Container(
-                    height: 50,
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Center(
-                      child: Text(
-                        widget.barTitle,
-                        style: TextStyle(color: Colors.white),
+                    // Register button
+                    Center(
+                      child: GestureDetector(
+                        onTap: register,
+                        child: const Hero(
+                          tag: "reg_btn",
+                          child: Login_btn(text: "Register"),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(widget.subText),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return Login(
-                              icon: Icons.login,
-                              barTitle: "Login",
-                              subText: "Don't have an account?",
+
+                    const SizedBox(height: 20),
+
+                    // Login redirect
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(widget.subText),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const Login(
+                                  icon: Icons.login,
+                                  barTitle: "Login",
+                                  subText: "Don't have an account?",
+                                ),
+                              ),
                             );
                           },
+                          child: const Text(
+                            " Login",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
                         ),
-                      );
-                    },
-                    child: Text(
-                      " Login",
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              SizedBox(height: 70),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
