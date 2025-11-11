@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 enum ApiProvider { pop1, pop1alt }
 
 /// Selector
@@ -75,7 +74,7 @@ Stream<String> pop1Stream(String message) async* {
 
 Stream<String> pop1AltStream(String message) async* {
   List history = AiSessionHistory.value;
-  final String openRouterApiKey = aicred.value; 
+  final String openRouterApiKey = aicred.value ; 
 
   void addItem(String item) {
     history.add(item);
