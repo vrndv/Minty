@@ -201,15 +201,29 @@ class _ChatPageState extends State<ChatPage> {
             ),
             title: Text(widget.receiverUsername),
             actions: [
-              IconButton(
-                onPressed: _pickWallpaper,
-                icon: Icon(Icons.image),
-                tooltip: "change wallpaper",
-              ),
-              IconButton(
-                onPressed: _resetWallpaper,
-                icon: const Icon(Icons.delete),
-                tooltip: "reset wallpaper",
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert),
+
+                onSelected: (value) {
+                  if (value == 'set') {
+                    _pickWallpaper();
+                  } else if (value == 'reset') {
+                    _resetWallpaper();
+                  } else if (value == 'report') {
+                    //add the report the user function here
+                  }
+                },
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 'set',
+                    child: Text('Set wallpaper'),
+                  ),
+                  const PopupMenuItem(
+                    value: 'set',
+                    child: Text('Reset wallpaper'),
+                  ),
+                  const PopupMenuItem(value: 'report', child: Text('Report')),
+                ],
               ),
             ],
           ),
