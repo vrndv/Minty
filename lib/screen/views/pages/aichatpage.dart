@@ -21,8 +21,9 @@ class _AiChatState extends State<AiChat> {
   TextEditingController msgcontroller = TextEditingController();
   bool isLoading = false;
   List message = [];
-  ApiProvider model = ApiProvider.pop1;
-
+  ApiProvider model = ApiProvider.popMain;
+  int i = 0;
+  List models = [ApiProvider.popMain,ApiProvider.pop1,ApiProvider.pop1alt];
   final ScrollController _scrollController = ScrollController();
   final ValueNotifier<bool> _isTyping = ValueNotifier(false);
 
@@ -37,11 +38,12 @@ class _AiChatState extends State<AiChat> {
   }
 
   toggle() {
-    if (model == ApiProvider.pop1) {
-      model = ApiProvider.pop1alt;
+    if (i >= 0 && i <2) {
+      i++;
     } else {
-      model = ApiProvider.pop1;
+      i = 0;
     }
+    model = models[i];
     setState(() {});
   }
 
@@ -115,8 +117,8 @@ class _AiChatState extends State<AiChat> {
               GestureDetector(
                 onTap: () => toggle(),
                 child: Text(
-                  model.name == "pop1"
-                      ? "PoP-01"
+                  model.name != "pop1alt"
+                      ? model.name
                       : "PoP-01-Alt (${Balance.value})",
                   style: TextStyle(
                     color: Balance.value == "0"
