@@ -5,7 +5,7 @@ import 'package:SHADE/dataNotifiers/notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//updated
+
 enum ApiProvider {popMain, pop1, pop1alt }
 
 /// Selector
@@ -38,7 +38,6 @@ Stream<String> popMainStream(String message) async* {
     AiSessionHistory.value = history;
   }
 
- 
   final messages = [
     {
       'role': 'system',
@@ -114,9 +113,6 @@ Stream<String> popMainStream(String message) async* {
     yield 'Error: Could not access Groq API. Details: $e';
   }
 }
-
-
-
 
 /// APIFreeLLM - pop1
 
@@ -199,7 +195,6 @@ final chatHistoryString = lastMessages
       }
     } else {
       if (streamedResponse.statusCode == 500) {
-        print("error 500, trying to re-call");
         yield "*ERR-500 retrying...* \n\n\n";
         yield* pop1Stream(message);
       } else {
@@ -213,7 +208,6 @@ final chatHistoryString = lastMessages
   }
 }
 // OpenRouter - pop1alt
-
 
 Stream<String> pop1AltStream(String message) async* {
   List history = AiSessionHistory.value;
@@ -244,7 +238,6 @@ Stream<String> pop1AltStream(String message) async* {
 
   try {
     final streamedResponse = await request.send();
-    print(streamedResponse.headers);
 
 
     final prefs = await SharedPreferences.getInstance();
