@@ -200,6 +200,7 @@ class _ChatPageState extends State<ChatPage> {
               child: Avatar(seed: widget.pfp, r: 20),
             ),
             title: Text(widget.receiverUsername),
+            //change
             actions: [
               PopupMenuButton<String>(
                 icon: const Icon(Icons.more_vert),
@@ -219,7 +220,7 @@ class _ChatPageState extends State<ChatPage> {
                     child: Text('Set wallpaper'),
                   ),
                   const PopupMenuItem(
-                    value: 'set',
+                    value: 'reset',
                     child: Text('Reset wallpaper'),
                   ),
                   const PopupMenuItem(value: 'report', child: Text('Report')),
