@@ -200,11 +200,9 @@ class _ChatPageState extends State<ChatPage> {
               child: Avatar(seed: widget.pfp, r: 20),
             ),
             title: Text(widget.receiverUsername),
-            //change
             actions: [
               PopupMenuButton<String>(
                 icon: const Icon(Icons.more_vert),
-
                 onSelected: (value) {
                   if (value == 'set') {
                     _pickWallpaper();

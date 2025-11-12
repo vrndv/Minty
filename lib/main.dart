@@ -1,4 +1,3 @@
-
 //Just to save point ,the username adding option is currently situated in homescreen
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,7 @@ import 'package:no_screenshot/no_screenshot.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);  
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MainApp());
 }
 
@@ -19,20 +18,22 @@ class MainApp extends StatefulWidget {
   @override
   State<MainApp> createState() => _MainAppState();
 }
+
 class _MainAppState extends State<MainApp> {
   final noS = NoScreenshot.instance;
-  @override 
+  @override
   void initState() {
     super.initState();
     noS.screenshotOn();
   }
+
   @override
   void dispose() {
     noS.screenshotOn();
     super.dispose();
   }
-  
-    @override
+
+  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: currentTheme,
@@ -52,7 +53,9 @@ class _MainAppState extends State<MainApp> {
               brightness: Brightness.dark,
             ),
           ),
-          themeMode: themeMode? ThemeMode.light:ThemeMode.dark, // theme changes
+          themeMode: themeMode
+              ? ThemeMode.light
+              : ThemeMode.dark, // theme changes
           home: child,
         );
       },
