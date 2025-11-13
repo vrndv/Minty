@@ -7,7 +7,6 @@ import 'package:SHADE/screen/home/navbar.dart';
 import 'package:SHADE/screen/views/pages/search.dart';
 import 'package:SHADE/screen/views/tree.dart';
 import 'package:SHADE/dataNotifiers/notifier.dart';
-import 'package:SHADE/screen/views/widgets/avatar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DataBaseForm extends StatefulWidget {
