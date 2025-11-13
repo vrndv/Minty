@@ -5,6 +5,7 @@ import 'package:SHADE/dataNotifiers/notifier.dart';
 import 'package:SHADE/services/chat_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+
 //new branch
 class searchPage extends StatefulWidget {
   const searchPage({super.key});
@@ -31,139 +32,161 @@ class _searchPageState extends State<searchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Column(
-          children: [
-            SearchBar(
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.all(Radius.zero),
+    final bgcolor = currentTheme.value
+        ? Colors.grey[200]
+        : const Color.fromARGB(225, 20, 20, 20);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'SHADE',
+          style: TextStyle(
+            color: currentTheme.value ? Colors.black : Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+
+        backgroundColor: bgcolor,
+        elevation: 0,
+      ),
+      body: Container(
+        child: Center(
+          child: Column(
+            children: [
+              SearchBar(
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.all(Radius.zero),
+                  ),
                 ),
+                onTap: () {},
+                focusNode: focus,
+                hintText: "Search",
+                leading: Icon(Icons.search),
+                onChanged: (value) {
+                  setState(() {
+                    name = value;
+                  });
+                },
               ),
-              onTap: () {},
-              focusNode: focus,
-              hintText: "Search",
-              leading: Icon(Icons.search),
-              onChanged: (value) {
-                setState(() {
-                  name = value;
-                });
-              },
-            ),
-            Expanded(
-              child: name.isEmpty
-                  ? StreamBuilder(
-                      stream: viewRecent().asStream(),
-                      builder: (context, snapshot) {
-                        var users = snapshot.data ?? [];
-                        users = users.reversed.toList();
-                        return ListView.builder(
-                          itemCount: users.length,
-                          itemBuilder: (context, index) {
-                            var data = users[index];
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return userChatPage(
-                                        u1: data["uid"],
-                                        u2: userID.value,
-                                        senderUsername: currentUser.value,
-                                        receiverUsername: data["username"],
-                                        pfp: data["pfp"] ?? data["username"],
-                                      );
-                                    },
+              Expanded(
+                child: name.isEmpty
+                    ? StreamBuilder(
+                        stream: viewRecent().asStream(),
+                        builder: (context, snapshot) {
+                          var users = snapshot.data ?? [];
+                          users = users.reversed.toList();
+                          return ListView.builder(
+                            itemCount: users.length,
+                            itemBuilder: (context, index) {
+                              var data = users[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return userChatPage(
+                                          u1: data["uid"],
+                                          u2: userID.value,
+                                          senderUsername: currentUser.value,
+                                          receiverUsername: data["username"],
+                                          pfp: data["pfp"] ?? data["username"],
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                child: ListTile(
+                                  leading: Avatar(
+                                    seed: data["pfp"] ?? data["username"],
+                                    r: 20,
                                   ),
-                                );
-                              },
-                              child: ListTile(
-                                leading: Avatar(
-                                  seed: data["pfp"] ?? data["username"],
-                                  r: 20,
-                                ),
-                                title: Text(data["username"]),
-                                trailing: IconButton(onPressed: () {
-                                  removeRecent(data["uid"]);
-                                  setState(() {
-                                    
-                                  });
-                                  }, icon: Icon(Icons.cancel)),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    )
-                  : StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection("user")
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-
-                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return Center(child: Text("No users found"));
-                        }
-
-                        // Extract and filter data before building the list
-                        var allUsers = snapshot.data!.docs;
-                        var filteredUsers = name.isEmpty
-                            ? []
-                            : allUsers.where((doc) {
-                                var username = doc['username']
-                                    .toString()
-                                    .toLowerCase();
-                                return (username.contains(name.toLowerCase()) &&
-                                    username.toLowerCase() !=
-                                        currentUser.value.toLowerCase());
-                              }).toList();
-
-                        return ListView.builder(
-                          itemCount: filteredUsers.length,
-                          itemBuilder: (context, index) {
-                            var data = filteredUsers[index].data();
-                            return GestureDetector(
-                              onTap: () {
-                                addRecent(
-                                  id: data["uid"],
-                                  username: data["username"],
-                                  pfp: data["pfp"] ?? data["username"],
-                                );
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return userChatPage(
-                                        u1: data["uid"],
-                                        u2: userID.value,
-                                        senderUsername: currentUser.value,
-                                        receiverUsername: data["username"],
-                                        pfp: data["pfp"] ?? data["username"],
-                                      );
+                                  title: Text(data["username"]),
+                                  trailing: IconButton(
+                                    onPressed: () {
+                                      removeRecent(data["uid"]);
+                                      setState(() {});
                                     },
+                                    icon: Icon(Icons.cancel),
                                   ),
-                                );
-                              },
-                              child: ListTile(
-                                leading: Avatar(
-                                  seed: data["pfp"] ?? data["username"],
-                                  r: 20,
                                 ),
-                                title: Text(data['username']),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-            ),
-          ],
+                              );
+                            },
+                          );
+                        },
+                      )
+                    : StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection("user")
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+
+                          if (!snapshot.hasData ||
+                              snapshot.data!.docs.isEmpty) {
+                            return Center(child: Text("No users found"));
+                          }
+
+                          // Extract and filter data before building the list
+                          var allUsers = snapshot.data!.docs;
+                          var filteredUsers = name.isEmpty
+                              ? []
+                              : allUsers.where((doc) {
+                                  var username = doc['username']
+                                      .toString()
+                                      .toLowerCase();
+                                  return (username.contains(
+                                        name.toLowerCase(),
+                                      ) &&
+                                      username.toLowerCase() !=
+                                          currentUser.value.toLowerCase());
+                                }).toList();
+
+                          return ListView.builder(
+                            itemCount: filteredUsers.length,
+                            itemBuilder: (context, index) {
+                              var data = filteredUsers[index].data();
+                              return GestureDetector(
+                                onTap: () {
+                                  addRecent(
+                                    id: data["uid"],
+                                    username: data["username"],
+                                    pfp: data["pfp"] ?? data["username"],
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return userChatPage(
+                                          u1: data["uid"],
+                                          u2: userID.value,
+                                          senderUsername: currentUser.value,
+                                          receiverUsername: data["username"],
+                                          pfp: data["pfp"] ?? data["username"],
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                child: ListTile(
+                                  leading: Avatar(
+                                    seed: data["pfp"] ?? data["username"],
+                                    r: 20,
+                                  ),
+                                  title: Text(data['username']),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );
