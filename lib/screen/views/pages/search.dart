@@ -5,8 +5,6 @@ import 'package:SHADE/dataNotifiers/notifier.dart';
 import 'package:SHADE/services/chat_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
-//new branch
 class searchPage extends StatefulWidget {
   const searchPage({super.key});
 
