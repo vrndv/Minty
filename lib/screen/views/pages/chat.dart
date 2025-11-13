@@ -203,7 +203,6 @@ class _ChatPageState extends State<ChatPage> {
             actions: [
               PopupMenuButton<String>(
                 icon: const Icon(Icons.more_vert),
-
                 onSelected: (value) {
                   if (value == 'set') {
                     _pickWallpaper();
@@ -219,7 +218,7 @@ class _ChatPageState extends State<ChatPage> {
                     child: Text('Set wallpaper'),
                   ),
                   const PopupMenuItem(
-                    value: 'set',
+                    value: 'reset',
                     child: Text('Reset wallpaper'),
                   ),
                   const PopupMenuItem(value: 'report', child: Text('Report')),

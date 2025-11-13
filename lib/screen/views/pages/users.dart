@@ -7,6 +7,7 @@ import 'package:SHADE/services/chat_services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Users extends StatefulWidget {
   const Users({super.key});
@@ -31,7 +32,24 @@ class _UsersState extends State<Users> {
 
   @override
   Widget build(BuildContext context) {
+    final bgcolor = currentTheme.value
+        ? Colors.grey[200]
+        : const Color.fromARGB(225, 20, 20, 20);
     return Scaffold(
+      backgroundColor: bgcolor,
+      appBar: AppBar(
+        title: Text(
+          'SHADE',
+          style: TextStyle(
+            color: currentTheme.value ? Colors.black : Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+
+        backgroundColor: bgcolor,
+        elevation: 0,
+      ),
       body: Stack(
         children: [
           Column(
@@ -118,11 +136,11 @@ class _UsersState extends State<Users> {
                   height: 50,
                   width: 50,
                   child: Lottie.asset(
-          'assets/rive/orb.json',
-          width: 700,
-          height: 700,
-          fit: BoxFit.contain,
-        ),
+                    'assets/rive/orb.json',
+                    width: 700,
+                    height: 700,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),

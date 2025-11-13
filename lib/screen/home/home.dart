@@ -70,20 +70,23 @@ class _DataBaseFormState extends State<DataBaseForm> {
       );
     }
     getPfp();
-     getTheme();
+    getTheme();
   }
-Future<void> getTheme() async {
+
+  Future<void> getTheme() async {
     final pref = await SharedPreferences.getInstance();
     final val = pref.getBool("currentTheme") ?? false;
     currentTheme.value = val;
   }
-Future<void> getPfp()async{
-  var data =await FirebaseFirestore.instance.collection("user").where("uid",isEqualTo:userID.value,).get();
-  var pfp = data.docs.first.data()["pfp"];
-  currentPFP.value = pfp??currentUser.value;
-  
-}
 
+  Future<void> getPfp() async {
+    var data = await FirebaseFirestore.instance
+        .collection("user")
+        .where("uid", isEqualTo: userID.value)
+        .get();
+    var pfp = data.docs.first.data()["pfp"];
+    currentPFP.value = pfp ?? currentUser.value;
+  }
 
   @override
   void dispose() {
@@ -101,73 +104,6 @@ Future<void> getPfp()async{
       },
       child: Scaffold(
         //sabari
-        appBar: AppBar(
-          title: ValueListenableBuilder(
-            valueListenable: currentPageNotifier,
-            builder: (context, value, child) {
-              return value != 1 ? Text('SHADE',) : Text('Profile');
-            },
-          ),
-          elevation: 20,
-          shadowColor: const Color.fromARGB(83, 0, 0, 0),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: ValueListenableBuilder(
-                valueListenable: currentPageNotifier,
-                builder: (context, value, child) {
-                  return value != 1
-                      ? ValueListenableBuilder(valueListenable: currentPFP, builder: (context, value, child) =>  Avatar(seed: currentPFP.value, r: 20),)
-                      : GestureDetector(
-                          onTap: () {
-                            //ADD POP UP WARNING HERE => sabarikasi
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Confirm Logout'),
-                                  content: const Text(
-                                    'Do you really want to leave us',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        
-                                        Navigator.of(context).pop();
-                                        //closes the dialgoues
-                                      },
-                                      child: const Text('No'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        //closes the dialgoues
-                                        FirebaseAuth.instance.signOut();
-                                        currentTheme.value = false;
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => Auth(),
-                                          ),
-                                        );
-                                      },
-                                      child: const Text('Yes'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          child: SizedBox(
-                            width: 50,
-                            child: Icon(Icons.logout_outlined),
-                          ),
-                        );
-                },
-              ),
-            ),
-          ],
-        ),
         body: ValueListenableBuilder(
           valueListenable: isSearch,
           builder: (BuildContext context, dynamic value, Widget? child) {
