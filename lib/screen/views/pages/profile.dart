@@ -123,31 +123,51 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               Expanded(
                 child: Container(
-                  height: 250,
-                  color: bgColor,
+                  decoration: BoxDecoration(
+                    color: currentTheme.value
+                        ? const Color.fromARGB(225, 20, 20, 20)
+                        : Colors.grey[200],
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                  ),
+                  height: 350,
+                  width: double.infinity,
+
                   child: Stack(
                     children: [
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Padding(
-                          padding: const EdgeInsets.only(bottom: 17),
+                          padding: const EdgeInsets.only(bottom: 60),
                           child: Text(
                             currentUser.value,
                             style: TextStyle(
                               overflow: TextOverflow.ellipsis,
                               fontSize: 30,
+                              color: currentTheme.value
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                           ),
                         ),
                       ),
                       Align(
                         alignment: Alignment.bottomCenter,
-                        child: Text(
-                          "${(chatLen.value).toInt()} chats",
-                          style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 40),
+
+                          child: Text(
+                            "${(chatLen.value).toInt()} chats",
+                            style: TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                              fontWeight: FontWeight.bold,
+                              color: currentTheme.value
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
@@ -160,8 +180,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                       Positioned(
-                        bottom: 60,
-                        left: 210,
+                        bottom: 110,
+                        left: 220,
                         child: GestureDetector(
                           onTap: () async {
                             Navigator.push(
