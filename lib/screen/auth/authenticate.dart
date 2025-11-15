@@ -1,5 +1,6 @@
 import 'package:SHADE/screen/views/widgets/auth_wave.dart';
 import 'package:SHADE/screen/views/widgets/login_btn.dart';
+import 'package:SHADE/services/keys.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:SHADE/screen/auth/login.dart';
@@ -96,7 +97,6 @@ class _AuthState extends State<Auth> {
                                   top: 15,
                                   child: GestureDetector(
                                     onTap: () {
-                                      print(currentTheme.value);
                                       playFlicker();
                                     },
                                     child: Text(
