@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:SHADE/dataNotifiers/notifier.dart';
 
@@ -12,15 +11,15 @@ class DatabaseService {
         .where("username", isEqualTo: data)
         .get();
 
-    return check.docs.isEmpty;
+    return check.docs.isNotEmpty;
   }
 
-  Future<bool> write({required Map<String, dynamic> data}) async {
-    if (await userExist(data: data["username"]) == true) {
+  Future<void> write({required Map<String, dynamic> data}) async {
+    print(data);
+    try {
       await db.collection("user").add(data).then((DocumentReference doc) {});
-      return false;
-    } else {
-      return true;
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -86,13 +85,14 @@ class DatabaseService {
 
   Future<bool> checkPhoneUser({required String username}) async {
     final snapshot = await db
-              .collection("numphone")
-              .where("username", isEqualTo: username)
-              .limit(1)
-              .get();
-          if (snapshot.docs.isNotEmpty) {
-            return true;
-          }return false;
+        .collection("numphone")
+        .where("username", isEqualTo: username)
+        .limit(1)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      return true;
+    }
+    return false;
   }
 
   Future<String> findUsername({required String email}) async {
@@ -103,9 +103,13 @@ class DatabaseService {
     return check.docs.first["username"];
   }
 
-  Future<void> pushAvatar({ required String id,required String seed}) async {
-    var data =await db.collection("user").where("uid",isEqualTo:id,).limit(1).get();
+  Future<void> pushAvatar({required String id, required String seed}) async {
+    var data = await db
+        .collection("user")
+        .where("uid", isEqualTo: id)
+        .limit(1)
+        .get();
     var docid = data.docs.first.id;
-    await db.collection("user").doc(docid).update({"pfp":seed});
+    await db.collection("user").doc(docid).update({"pfp": seed});
   }
 }

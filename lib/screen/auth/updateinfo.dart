@@ -1,3 +1,4 @@
+import 'package:SHADE/screen/auth/make-pin.dart';
 import 'package:SHADE/screen/views/widgets/auth_wave.dart';
 import 'package:SHADE/screen/views/widgets/avatar.dart';
 import 'package:SHADE/screen/views/widgets/login_btn.dart';
@@ -105,18 +106,13 @@ class _UpdateInfoState extends State<UpdateInfo> {
                           setState(() {
                             err = "";
                           });
-                          var isWritten = await DatabaseService().write(
-                            data: {
-                              "username": nameController.text,
-                              "email": widget.userEmail,
-                              "uid": uid,
-                            },
-                          );
+                          var isWritten = await DatabaseService().userExist(data: nameController.text);
                           if (isWritten == true) {
                             setState(() {
                               err = "Username already exists";
                             });
-                          } else {
+                          }
+                          else {
                             setState(() {
                               err = "";
                               userID.value = FirebaseAuth.instance.currentUser!.uid;
@@ -124,10 +120,7 @@ class _UpdateInfoState extends State<UpdateInfo> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) {
-                                    return DataBaseForm(
-                                      userEmail: nameController.text,
-                                      page: 0,
-                                    );
+                                    return MakePin(uid:uid , email: widget.userEmail, username: nameController.text);
                                   },
                                 ),
                               );
